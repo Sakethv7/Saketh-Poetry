@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital@0;1&family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-base: #F5F1ED;
+  --text-primary: #2B2723;
+  --text-secondary: #6B6361;
+  --border-color: #D4CCC3;
+  --accent: #A89968;
+  
+  --font-serif: 'Lora', serif;
+  --font-display: 'Playfair Display', serif;
+  --font-sans: 'Poppins', sans-serif;
+  
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-serif);
+  line-height: 1.8;
+  font-size: clamp(16px, 2vw, 18px);
+}
+
+/* Typography */
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+p {
+  margin-bottom: 1.5em;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: var(--transition);
+  border-bottom: 1px solid transparent;
+}
+
+a:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* Container */
+.container {
+  max-width: 70ch;
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 4rem);
+}
+
+.container-wide {
+  max-width: 100%;
+  padding: clamp(2rem, 5vw, 4rem);
+}
+
+/* Navigation */
+nav {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+nav a {
+  color: var(--text-secondary);
+}
+
+nav a:hover {
+  color: var(--accent);
+}
+
+.nav-title {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Decorative divider */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 3rem 0;
+  gap: 1rem;
+  color: var(--accent);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+}
+
+.divider-symbol {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* Stanza marker (Roman numerals) */
+.stanza-num {
+  font-family: var(--font-serif);
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.stanza-num:first-child {
+  margin-top: 0;
+}
+
+/* Stanza */
+.stanza {
+  margin-bottom: 2rem;
+}
+
+.stanza p {
+  margin-bottom: 0.8em;
+}
+
+.stanza p:last-child {
+  margin-bottom: 0;
+}
+
+/* Metadata */
+.poem-metadata {
+  text-align: center;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 2rem;
+}
+
+.poem-category {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.poem-subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+/* Footer */
+footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+}
+
+.poem-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.poem-nav a {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.poem-nav a:hover {
+  background-color: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.nav-placeholder {
+  flex: 1;
+}
+
+/* Grid for homepage */
+.poems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.poem-card {
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
+  transition: var(--transition);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.poem-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: var(--transition);
+}
+
+.poem-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.poem-card:hover::before {
+  left: 100%;
+}
+
+.poem-card h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.poem-card .poem-category {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.poem-card p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .poems-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .container {
+    padding: 1.5rem;
+  }
+  
+  nav {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .poem-nav {
+    flex-direction: column;
+  }
+  
+  .poem-nav a {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  nav, footer, .poem-nav {
+    display: none;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-base: #1a1714;
+    --text-primary: #E8E3DE;
+    --text-secondary: #A89968;
+    --border-color: #3A3530;
+  }
+  
+  .poem-card {
+    background: linear-gradient(135deg, rgba(40,35,30,0.5), rgba(40,35,30,0));
+  }
+}
