@@ -6,135 +6,78 @@
   <title>Wandering Poet — An Anthology</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    body { background: #0d0906; }
+    body { background: #F4EEE2; }
 
     /* ════════════════════════════════
-       HERO
+       OPENING — poem quote as hero
     ════════════════════════════════ */
-    .hero {
+    .opening {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       position: relative;
       overflow: hidden;
       background:
-        radial-gradient(ellipse 110% 60% at 50% 42%, rgba(185,115,28,0.09) 0%, transparent 65%),
-        linear-gradient(168deg, #0b0806 0%, #12100a 40%, #1c1409 100%);
+        radial-gradient(ellipse 130% 80% at 60% 25%, rgba(195,158,82,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 60% at 15% 80%, rgba(160,120,70,0.08) 0%, transparent 55%),
+        linear-gradient(170deg, #FAF6ED 0%, #F1E9D6 50%, #EAE0C8 100%);
     }
 
-    /* film grain */
-    .hero::before {
+    /* paper grain */
+    .opening::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-size: 220px 220px;
-      opacity: 0.045;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 220px;
+      opacity: 0.07;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* vignette */
-    .hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 35%, rgba(0,0,0,0.6) 100%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── nav ── */
-    .hero-nav {
+    /* ── slim top nav ── */
+    .top-nav {
       position: relative;
       z-index: 10;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: clamp(1.4rem, 3.5vw, 2.2rem) clamp(2rem, 7vw, 5rem);
+      padding: clamp(1.4rem, 3vw, 2rem) clamp(2rem, 7vw, 5rem);
       font-family: var(--font-sans);
-      font-size: 0.68rem;
-      letter-spacing: 0.18em;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgba(236,225,205,0.28);
+      color: rgba(90,68,38,0.4);
+      border-bottom: 1px solid rgba(160,130,80,0.12);
     }
 
-    /* ── center ── */
-    .hero-body {
+    /* ── quote stage — the real centrepiece ── */
+    .quote-stage {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 2rem clamp(2rem, 9vw, 7rem) 7rem;
+      padding: 3rem clamp(2rem, 10vw, 10rem) 7rem;
       position: relative;
       z-index: 10;
-      gap: 0;
     }
 
-    .hero-eyebrow {
+    .stage-label {
       font-family: var(--font-sans);
       font-size: 0.62rem;
-      letter-spacing: 0.35em;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: rgba(196,142,40,0.55);
-      margin-bottom: 2.2rem;
+      color: rgba(140,100,45,0.5);
+      margin-bottom: 2.8rem;
     }
 
-    .hero-title {
-      font-family: var(--font-display);
-      font-weight: 800;
-      margin: 0;
-      line-height: 0.86;
-      color: #ece1cc;
-    }
-
-    .hero-title .w {
-      display: block;
-      font-size: clamp(4.8rem, 14vw, 11rem);
-      letter-spacing: -0.03em;
-    }
-
-    .hero-title .p {
-      display: block;
-      font-size: clamp(2.8rem, 8.5vw, 6.5rem);
-      letter-spacing: 0.22em;
-      color: rgba(200,148,44,0.82);
-      font-weight: 700;
-      margin-top: 0.15em;
-    }
-
-    /* decorative rule */
-    .hero-ornament {
-      display: flex;
-      align-items: center;
-      gap: 0.9rem;
-      width: min(380px, 72vw);
-      margin: 2.6rem 0 2.2rem;
-    }
-
-    .hero-ornament .bar {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(to var(--dir, right), transparent, rgba(196,142,40,0.38));
-    }
-
-    .hero-ornament .bar:last-child { --dir: left; }
-
-    .hero-ornament .gem {
-      width: 5px;
-      height: 5px;
-      background: rgba(196,142,40,0.5);
-      transform: rotate(45deg);
-      flex-shrink: 0;
-    }
-
-    /* rotating quotes */
-    .quote-stage {
+    /* the rotating poem line */
+    .quote-wrap {
       position: relative;
-      height: 3.6rem;
-      width: min(600px, 86vw);
+      width: min(680px, 88vw);
+      min-height: 7rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -144,18 +87,54 @@
       position: absolute;
       font-family: var(--font-serif);
       font-style: italic;
-      font-size: clamp(0.82rem, 1.75vw, 0.98rem);
-      color: rgba(236,225,205,0.38);
-      line-height: 1.7;
+      font-size: clamp(1.25rem, 3.2vw, 1.9rem);
+      line-height: 1.55;
+      color: #3D2C12;
       text-align: center;
       opacity: 0;
-      transition: opacity 1.5s ease;
+      transition: opacity 1.6s ease;
+      letter-spacing: 0.01em;
     }
 
     .q.on { opacity: 1; }
 
-    /* scroll indicator */
-    .hero-scroll {
+    /* source of quote */
+    .q-source {
+      margin-top: 2rem;
+      font-family: var(--font-sans);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(140,100,45,0.5);
+      height: 1.2em;
+      position: relative;
+    }
+
+    .qs {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 1.6s ease;
+    }
+
+    .qs.on { opacity: 1; }
+
+    /* decorative rule below quote */
+    .stage-rule {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: 3.5rem;
+      width: min(220px, 50vw);
+    }
+
+    .stage-rule .line { flex: 1; height: 1px; background: rgba(160,120,60,0.25); }
+    .stage-rule .dot  { width: 4px; height: 4px; background: rgba(160,120,60,0.35); transform: rotate(45deg); flex-shrink: 0; }
+
+    /* scroll cue */
+    .scroll-cue {
       position: absolute;
       bottom: 2rem;
       left: 50%;
@@ -164,13 +143,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.55rem;
+      gap: 0.5rem;
       cursor: pointer;
     }
 
     .scroll-track {
       width: 1px;
-      height: 52px;
+      height: 46px;
       position: relative;
       overflow: hidden;
     }
@@ -178,38 +157,38 @@
     .scroll-track::after {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 100%;
-      background: linear-gradient(to bottom, rgba(196,142,40,0.7), transparent);
-      animation: dropLine 2.4s cubic-bezier(.4,0,.2,1) infinite;
+      top: 0; left: 0; right: 0; height: 100%;
+      background: linear-gradient(to bottom, rgba(150,105,40,0.6), transparent);
+      animation: drop 2.5s cubic-bezier(.4,0,.2,1) infinite;
     }
 
-    @keyframes dropLine {
+    @keyframes drop {
       0%   { transform: translateY(-100%); opacity: 0; }
       15%  { opacity: 1; }
-      75%  { transform: translateY(0); opacity: 0.6; }
+      75%  { transform: translateY(0); opacity: 0.5; }
       100% { transform: translateY(100%); opacity: 0; }
     }
 
     .scroll-word {
       font-family: var(--font-sans);
-      font-size: 0.58rem;
+      font-size: 0.57rem;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(236,225,205,0.16);
+      color: rgba(90,68,38,0.28);
     }
 
     /* ════════════════════════════════
        POEMS SECTION
     ════════════════════════════════ */
     .poems-section {
-      background: var(--bg-base);
+      background: #F4EEE2;
+      border-top: 1px solid rgba(160,130,80,0.15);
     }
 
     .poems-inner {
       max-width: 1100px;
       margin: 0 auto;
-      padding: clamp(4rem, 9vw, 7rem) clamp(2rem, 5vw, 4rem);
+      padding: clamp(4rem, 8vw, 6rem) clamp(2rem, 5vw, 4rem);
     }
 
     .lang-divider {
@@ -253,60 +232,64 @@
       padding: 0.2rem 0.65rem;
     }
 
-    /* ── footer ── */
+    /* ── site footer ── */
     .site-footer {
-      background: var(--bg-base);
-      border-top: 1px solid var(--border-color);
+      background: #F4EEE2;
+      border-top: 1px solid rgba(160,130,80,0.15);
       text-align: center;
       padding: 2.5rem 2rem 3.5rem;
       font-family: var(--font-sans);
-      font-size: 0.78rem;
-      color: var(--text-secondary);
-      letter-spacing: 0.04em;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      color: rgba(90,68,38,0.4);
     }
   </style>
 </head>
 <body>
 
-  <!-- ════ HERO ════ -->
-  <section class="hero">
+  <!-- ════ OPENING ════ -->
+  <section class="opening">
 
-    <nav class="hero-nav">
-      <span>Wandering Poet</span>
+    <nav class="top-nav">
+      <span>An Anthology</span>
       <span>11 poems</span>
     </nav>
 
-    <div class="hero-body">
+    <div class="quote-stage">
+      <p class="stage-label">From the collection</p>
 
-      <p class="hero-eyebrow">An Anthology</p>
-
-      <h1 class="hero-title">
-        <span class="w">Wandering</span>
-        <span class="p">Poet</span>
-      </h1>
-
-      <div class="hero-ornament">
-        <div class="bar"></div>
-        <div class="gem"></div>
-        <div class="bar"></div>
+      <div class="quote-wrap">
+        <p class="q" data-src="Tale of the Wandering Poet">Living as a wandering poet, believing, as I walk away from yesterday.</p>
+        <p class="q" data-src="Tale of the Wandering Poet">Which version would you be, my destiny?</p>
+        <p class="q" data-src="Empty Reasons">She still, carelessly, without contention —<br>cuts through my frail heart and its reason.</p>
+        <p class="q" data-src="My Dear Melancholy">O my dear melancholy,<br>how much have I missed you?</p>
+        <p class="q" data-src="At the Turn of a Hill">I was reborn when I saw her<br>at the turn of a hill.</p>
+        <p class="q" data-src="After Many Seasons">After many seasons,<br>my umbrella found a companion.</p>
+        <p class="q" data-src="It's Not As If">It's not as if I can't help but admit<br>that this ballad is real.</p>
+        <p class="q" data-src="Saboot">Ye ghazal saboot hai ki ye pyaar hi to hai.</p>
       </div>
 
-      <div class="quote-stage">
-        <p class="q">Living as a wandering poet, believing, as I walk away from yesterday.</p>
-        <p class="q">Which version would you be, my destiny?</p>
-        <p class="q">I was reborn when I saw her at the turn of a hill.</p>
-        <p class="q">O my dear melancholy — how much have I missed you?</p>
-        <p class="q">She still carelessly, without contention, cuts through my frail heart.</p>
-        <p class="q">After many seasons, my umbrella found a companion.</p>
-        <p class="q">Ye ghazal saboot hai ki ye pyaar hi to hai.</p>
-        <p class="q">I can't seem to find you in my poetry anymore.</p>
+      <div class="q-source">
+        <span class="qs" data-i="0">Tale of the Wandering Poet</span>
+        <span class="qs" data-i="1">Tale of the Wandering Poet</span>
+        <span class="qs" data-i="2">Empty Reasons</span>
+        <span class="qs" data-i="3">My Dear Melancholy</span>
+        <span class="qs" data-i="4">At the Turn of a Hill</span>
+        <span class="qs" data-i="5">After Many Seasons</span>
+        <span class="qs" data-i="6">It's Not As If</span>
+        <span class="qs" data-i="7">Saboot</span>
       </div>
 
+      <div class="stage-rule">
+        <div class="line"></div>
+        <div class="dot"></div>
+        <div class="line"></div>
+      </div>
     </div>
 
-    <div class="hero-scroll" onclick="document.getElementById('poems').scrollIntoView({behavior:'smooth'})">
+    <div class="scroll-cue" onclick="document.getElementById('poems').scrollIntoView({behavior:'smooth'})">
       <div class="scroll-track"></div>
-      <span class="scroll-word">scroll</span>
+      <span class="scroll-word">read</span>
     </div>
 
   </section>
@@ -400,16 +383,20 @@
   </section>
 
   <script>
-    // Rotating quotes — fade one out, next one in
-    const qs = document.querySelectorAll('.q');
+    const quotes  = document.querySelectorAll('.q');
+    const sources = document.querySelectorAll('.qs');
     let i = 0;
-    qs[0].classList.add('on');
+
+    quotes[0].classList.add('on');
+    sources[0].classList.add('on');
 
     setInterval(() => {
-      qs[i].classList.remove('on');
-      i = (i + 1) % qs.length;
-      qs[i].classList.add('on');
-    }, 4200);
+      quotes[i].classList.remove('on');
+      sources[i].classList.remove('on');
+      i = (i + 1) % quotes.length;
+      quotes[i].classList.add('on');
+      sources[i].classList.add('on');
+    }, 4500);
   </script>
 
 </body>
