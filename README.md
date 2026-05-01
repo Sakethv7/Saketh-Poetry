@@ -1,4 +1,4 @@
-# Saketh's Poetry
+# Wandering Poet
 
 A beautifully crafted portfolio of 11 poems across four emotional landscapes: mourning, obsession, classical ghazals, and hope. Each poem lives on its own atmospheric page, with colors and aesthetics tailored to its essence.
 
@@ -164,7 +164,7 @@ This ancient form, originating in Arabic and refined in Urdu and Persian poetry,
 
 ## 📄 License
 
-These poems are original works by Saketh. Please ask before republishing or adapting them.
+These poems are original works by Wandering Poet. Please ask before republishing or adapting them.
 
 The website code is available for modification and reuse — fork it, remix it, adapt it for your own poetry.
 
@@ -172,7 +172,7 @@ The website code is available for modification and reuse — fork it, remix it, 
 
 ## 👤 Author
 
-**Saketh** — Poet, builder, wanderer. Working on FactoryMind (hardware + agentic AI). Building toward AI × hardware founder work.
+**Wandering Poet** — Poet, builder, wanderer. Working on FactoryMind (hardware + agentic AI). Building toward AI × hardware founder work.
 
 ---
 

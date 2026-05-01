@@ -1,4 +1,4 @@
-# Saketh's Poetry — Design & Architecture
+# Wandering Poet — Design & Architecture
 
 ## Core Concept
 A literary, surreal poetry portfolio where each poem exists as its own atmospheric world. Readers navigate between poems via a central index, and each poem page reflects its emotional essence through color, typography, and subtle visual metaphors.
