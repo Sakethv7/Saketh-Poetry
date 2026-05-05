@@ -236,12 +236,12 @@ footer {
 
 .poem-card {
   padding: 2rem;
-  border: 1px solid var(--border-color);
-  background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
+  border: 1px solid var(--card-border, var(--border-color));
+  background: var(--card-bg, linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0)));
   transition: var(--transition);
   cursor: pointer;
   text-decoration: none;
-  color: inherit;
+  color: var(--card-heading, var(--text-primary));
   position: relative;
   overflow: hidden;
 }
@@ -253,13 +253,14 @@ footer {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
   transition: var(--transition);
 }
 
 .poem-card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--card-accent, var(--accent));
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  transform: translateY(-2px);
 }
 
 .poem-card:hover::before {
@@ -269,15 +270,17 @@ footer {
 .poem-card h2 {
   margin-bottom: 0.5rem;
   font-size: 1.5rem;
+  color: var(--card-heading, var(--text-primary));
 }
 
 .poem-card .poem-category {
   display: block;
   margin-bottom: 1rem;
+  color: var(--card-accent, var(--accent));
 }
 
 .poem-card p {
-  color: var(--text-secondary);
+  color: var(--card-body, var(--text-secondary));
   font-size: 0.95rem;
   margin: 0;
   line-height: 1.6;
