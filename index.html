@@ -258,27 +258,8 @@
     <div class="quote-stage">
       <p class="stage-label">From the collection</p>
 
-      <div class="quote-wrap">
-        <p class="q" data-src="Tale of the Wandering Poet">Living as a wandering poet, believing, as I walk away from yesterday.</p>
-        <p class="q" data-src="Tale of the Wandering Poet">Which version would you be, my destiny?</p>
-        <p class="q" data-src="Empty Reasons">She still, carelessly, without contention —<br>cuts through my frail heart and its reason.</p>
-        <p class="q" data-src="My Dear Melancholy">O my dear melancholy,<br>how much have I missed you?</p>
-        <p class="q" data-src="At the Turn of a Hill">I was reborn when I saw her<br>at the turn of a hill.</p>
-        <p class="q" data-src="After Many Seasons">After many seasons,<br>my umbrella found a companion.</p>
-        <p class="q" data-src="It's Not As If">It's not as if I can't help but admit<br>that this ballad is real.</p>
-        <p class="q" data-src="Saboot">Ye ghazal saboot hai ki ye pyaar hi to hai.</p>
-      </div>
-
-      <div class="q-source">
-        <span class="qs" data-i="0">Tale of the Wandering Poet</span>
-        <span class="qs" data-i="1">Tale of the Wandering Poet</span>
-        <span class="qs" data-i="2">Empty Reasons</span>
-        <span class="qs" data-i="3">My Dear Melancholy</span>
-        <span class="qs" data-i="4">At the Turn of a Hill</span>
-        <span class="qs" data-i="5">After Many Seasons</span>
-        <span class="qs" data-i="6">It's Not As If</span>
-        <span class="qs" data-i="7">Saboot</span>
-      </div>
+      <div class="quote-wrap" id="qwrap"></div>
+      <div class="q-source" id="qsrc"></div>
 
       <div class="stage-rule">
         <div class="line"></div>
@@ -432,21 +413,49 @@
     </footer>
   </section>
 
+  <script src="js/quotes.js"></script>
   <script>
-    const quotes  = document.querySelectorAll('.q');
-    const sources = document.querySelectorAll('.qs');
-    let i = 0;
+    (function () {
+      // Shuffle quotes randomly on every visit
+      const pool = window.QUOTES.slice();
+      for (let k = pool.length - 1; k > 0; k--) {
+        const j = Math.floor(Math.random() * (k + 1));
+        [pool[k], pool[j]] = [pool[j], pool[k]];
+      }
 
-    quotes[0].classList.add('on');
-    sources[0].classList.add('on');
+      const wrap = document.getElementById('qwrap');
+      const src  = document.getElementById('qsrc');
 
-    setInterval(() => {
-      quotes[i].classList.remove('on');
-      sources[i].classList.remove('on');
-      i = (i + 1) % quotes.length;
-      quotes[i].classList.add('on');
-      sources[i].classList.add('on');
-    }, 4500);
+      // Build DOM elements from the shuffled list
+      const qEls = pool.map(q => {
+        const p = document.createElement('p');
+        p.className = 'q';
+        p.innerHTML = q.text;
+        wrap.appendChild(p);
+        return p;
+      });
+
+      const sEls = pool.map(q => {
+        const s = document.createElement('span');
+        s.className = 'qs';
+        s.textContent = q.src;
+        src.appendChild(s);
+        return s;
+      });
+
+      // Start rotation
+      let i = 0;
+      qEls[0].classList.add('on');
+      sEls[0].classList.add('on');
+
+      setInterval(() => {
+        qEls[i].classList.remove('on');
+        sEls[i].classList.remove('on');
+        i = (i + 1) % qEls.length;
+        qEls[i].classList.add('on');
+        sEls[i].classList.add('on');
+      }, 4500);
+    })();
   </script>
 
 </body>
