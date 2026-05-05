@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shaam Samay — Wandering Poet</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    :root {
+      --poem-bg: linear-gradient(135deg, #1A1A3E 0%, #242450 50%, #1E2040 100%);
+      --poem-text: #EEE8F5;
+      --poem-accent: #C8A8E0;
+      --poem-secondary: #A090C0;
+    }
+
+    body {
+      background: var(--poem-bg);
+      color: var(--poem-text);
+    }
+
+    :root {
+      --text-primary: var(--poem-text);
+      --text-secondary: #C0B0D8;
+      --border-color: #3A3A60;
+      --accent: var(--poem-accent);
+      --bg-base: transparent;
+    }
+
+    nav {
+      border-bottom-color: var(--border-color);
+    }
+
+    .nav-title {
+      color: var(--poem-text);
+    }
+
+    a {
+      color: var(--poem-accent);
+    }
+
+    .divider::before,
+    .divider::after {
+      background: var(--border-color);
+    }
+
+    .poem-metadata {
+      border-bottom-color: var(--border-color);
+    }
+
+    footer {
+      border-top-color: var(--border-color);
+    }
+  </style>
+</head>
+<body data-anim="fireflies">
+  <nav class="container-wide">
+    <a href="../index.html">← Home</a>
+    <span class="nav-title">Shaam Samay</span>
+    <span style="width: 100px;"></span>
+  </nav>
+
+  <main class="container">
+    <article>
+      <div class="poem-metadata">
+        <span class="poem-category">Nazm</span>
+        <h1>Shaam Samay</h1>
+        <p class="poem-subtitle">A glimpse of the moon</p>
+      </div>
+
+      <div class="poem-text">
+        <div class="stanza">
+          <span class="stanza-num">I</span>
+          <p>Shaam samay, door kisi suraj mukhi ke bageeche mein</p>
+          <p>Chand ko utarte dekha humne,</p>
+          <p>Chhand bhi kesa? Pura chand.</p>
+        </div>
+
+        <div class="divider">
+          <span class="divider-symbol">◆</span>
+        </div>
+
+        <div class="stanza">
+          <span class="stanza-num">II</span>
+          <p>Aankhon mein bhi, chitwan mein bhi, chand hi chand jhalakta hai</p>
+          <p>Chaand hi bindi, chaand hi jhoomar, chehara chaand aur hasi bhi chaand.</p>
+        </div>
+      </div>
+
+      <footer>
+        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.5rem;">An evening's glimpse — the moon everywhere and in everything.</p>
+        <div class="poem-nav">
+          <a href="tumhari-yaadein.html">← Tumhari Yaadein</a>
+          <div class="nav-placeholder"></div>
+        </div>
+      </footer>
+    </article>
+  </main>
+  <script src="../js/scroll-reveal.js"></script>
+  <script src="../js/bg-anim.js"></script>
+</body>
+</html>

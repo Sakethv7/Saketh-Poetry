@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuch Lafz — Wandering Poet</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    :root {
+      --poem-bg: linear-gradient(135deg, #1E2A1A 0%, #243020 50%, #2A3625 100%);
+      --poem-text: #EAF0E5;
+      --poem-accent: #90B870;
+      --poem-secondary: #709850;
+    }
+
+    body {
+      background: var(--poem-bg);
+      color: var(--poem-text);
+    }
+
+    :root {
+      --text-primary: var(--poem-text);
+      --text-secondary: #C0D0B0;
+      --border-color: #3A4830;
+      --accent: var(--poem-accent);
+      --bg-base: transparent;
+    }
+
+    nav {
+      border-bottom-color: var(--border-color);
+    }
+
+    .nav-title {
+      color: var(--poem-text);
+    }
+
+    a {
+      color: var(--poem-accent);
+    }
+
+    .divider::before,
+    .divider::after {
+      background: var(--border-color);
+    }
+
+    .poem-metadata {
+      border-bottom-color: var(--border-color);
+    }
+
+    footer {
+      border-top-color: var(--border-color);
+    }
+  </style>
+</head>
+<body data-anim="stars">
+  <nav class="container-wide">
+    <a href="../index.html">← Home</a>
+    <span class="nav-title">Kuch Lafz</span>
+    <span style="width: 100px;"></span>
+  </nav>
+
+  <main class="container">
+    <article>
+      <div class="poem-metadata">
+        <span class="poem-category">Ghazal</span>
+        <h1>Kuch Lafz</h1>
+        <p class="poem-subtitle">A ghazal of words that remain</p>
+      </div>
+
+      <div class="poem-text">
+        <div class="stanza">
+          <span class="stanza-num">I</span>
+          <p>Kuch lafz aaj bhi kisi ke naam reh gaye</p>
+          <p>Din ba din lafz kam safaat zyada beh gaye.</p>
+        </div>
+
+        <div class="divider">
+          <span class="divider-symbol">◆</span>
+        </div>
+
+        <div class="stanza">
+          <span class="stanza-num">II</span>
+          <p>Yun patjhad tanhai mein guzaarke</p>
+          <p>Hum sardi ka hausla badhaate gaye.</p>
+        </div>
+
+        <div class="divider">
+          <span class="divider-symbol">◆</span>
+        </div>
+
+        <div class="stanza">
+          <span class="stanza-num">III</span>
+          <p>Aaj gulshan se guzarte hue ek khayal aya</p>
+          <p>Kuch khayal jo raat ko sataake subha chale gaye.</p>
+        </div>
+
+        <div class="divider">
+          <span class="divider-symbol">◆</span>
+        </div>
+
+        <div class="stanza">
+          <span class="stanza-num">IV</span>
+          <p>Tere gham ko jaan ki talaash thi</p>
+          <p>Talaash mein hum gham-o-jaan ho gaye.</p>
+        </div>
+
+        <div class="divider">
+          <span class="divider-symbol">◆</span>
+        </div>
+
+        <div class="stanza">
+          <span class="stanza-num">V</span>
+          <p>Jab gham ke waje khatm hote rahe</p>
+          <p>Tab tumhari yaadein wapis aake theher se gaye.</p>
+        </div>
+
+        <div class="divider">
+          <span class="divider-symbol">◆</span>
+        </div>
+
+        <div class="stanza">
+          <span class="stanza-num">VI</span>
+          <p>Aisi bhi kya bekhudi hai Saketh</p>
+          <p>Itna bebas fir ek bahaar ke liye ho gaye.</p>
+        </div>
+      </div>
+
+      <footer>
+        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.5rem;">Words addressed to someone — they remain long after the page is turned.</p>
+        <div class="poem-nav">
+          <a href="hum-kahan-jayenge.html">← Hum Kahan Jayenge</a>
+          <div class="nav-placeholder"></div>
+          <a href="door-jaake-basi.html">Door Jaake Basi →</a>
+        </div>
+      </footer>
+    </article>
+  </main>
+  <script src="../js/scroll-reveal.js"></script>
+  <script src="../js/bg-anim.js"></script>
+</body>
+</html>
