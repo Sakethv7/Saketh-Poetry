@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>At the Turn of a Hill — Wandering Poet</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/style.css?v=3">
   <style>
     :root {
       --poem-bg: linear-gradient(135deg, #E8D5C4 0%, #F0DCC8 50%, #E8D5C4 100%);
@@ -24,6 +24,11 @@
     }
     h1 { color: var(--poem-text); }
   </style>
+  <meta property="og:type"        content="article">
+  <meta property="og:site_name"   content="Wandering Poet — An Anthology">
+  <meta property="og:title"       content="At the Turn of a Hill">
+  <meta property="og:description" content="The flower shop at the turn of a hill keeps all the pretty flowers at one place while the cold wind in a shrill flips the pages of my book.">
+  <meta property="og:url"         content="https://sakethv7.github.io/Saketh-Poetry/poems/at-the-turn-of-a-hill.html">
 </head>
 <body data-anim="petals">
   <nav class="container-wide">
@@ -125,13 +130,15 @@
       <footer>
         <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.5rem;">Where flowers bloom and hope returns.</p>
         <div class="poem-nav">
-          <a href="tumhari-yaadein.html">← Prev</a>
+          <a href="../index.html">← Prev</a>
           <div class="nav-placeholder"></div>
-          <a href="it-not-as-if.html">Next →</a>
+          <a href="../index.html">Next →</a>
         </div>
       </footer>
     </article>
   </main>
+  <script src="../js/poems.js"></script>
+  <script src="../js/poem-nav.js"></script>
   <script src="../js/scroll-reveal.js"></script>
   <script src="../js/bg-anim.js"></script>
 </body>
