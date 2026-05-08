@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garden of Words — Wandering Poet</title>
+  <link rel="stylesheet" href="../css/style.css?v=3">
+  <style>
+    :root {
+      --poem-bg: linear-gradient(135deg, #141E28 0%, #1C2A38 100%);
+      --poem-text: #E0ECF8;
+      --poem-accent: #78A8C8;
+    }
+    body {
+      background: var(--poem-bg);
+      color: var(--poem-text);
+    }
+    :root {
+      --text-primary: var(--poem-text);
+      --text-secondary: #6898B8;
+      --border-color: #1C2A38;
+      --accent: var(--poem-accent);
+      --bg-base: transparent;
+    }
+    .waka-poem {
+      font-family: 'Lora', serif;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .waka-verse {
+      margin-bottom: 2.5rem;
+    }
+    .waka-speaker {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--poem-accent);
+      margin-bottom: 0.5rem;
+      font-family: 'Poppins', sans-serif;
+    }
+    .waka-verse p {
+      font-size: 1.1rem;
+      line-height: 1.9;
+      margin: 0;
+      font-style: italic;
+    }
+  </style>
+  <meta property="og:type"        content="article">
+  <meta property="og:site_name"   content="Wandering Poet — An Anthology">
+  <meta property="og:title"       content="Garden of Words">
+  <meta property="og:description" content="A distant rumble of thunder, / clouded skies.">
+  <meta property="og:url"         content="https://sakethv7.github.io/Saketh-Poetry/poems/garden-of-words.html">
+</head>
+<body data-anim="rain">
+  <nav class="container-wide">
+    <a href="../index.html">← Home</a>
+    <span class="nav-title">Garden of Words</span>
+    <span style="width: 100px;"></span>
+  </nav>
+  <main class="container">
+    <article>
+      <div class="poem-metadata">
+        <span class="poem-category">Waka</span>
+        <h1>Garden of Words</h1>
+        <p class="poem-subtitle">A waka exchange, inspired by the film Garden of Words (2013).</p>
+      </div>
+      <div class="poem-text">
+        <div class="waka-poem">
+          <div class="waka-verse">
+            <p class="waka-speaker">Original — Kojiki</p>
+            <p>A distant rumble of thunder,</p>
+            <p>clouded skies.</p>
+            <p>Perhaps rain comes again —</p>
+            <p>if so, will you stay with me?</p>
+          </div>
+          <div class="waka-verse">
+            <p class="waka-speaker">Her reply</p>
+            <p>A distant rumble of thunder.</p>
+            <p>Even if rain comes not,</p>
+            <p>I will stay here with you —</p>
+            <p>and if it rains, would you stay too?</p>
+          </div>
+          <div class="waka-verse">
+            <p class="waka-speaker">The poet, to no one in particular</p>
+            <p>Even if it doesn't rain,</p>
+            <p>I'll be here,</p>
+            <p>waiting for you,</p>
+            <p>or someone like you.</p>
+          </div>
+        </div>
+      </div>
+      <footer>
+        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1.5rem;">"Even if it doesn't rain, I'll be here — waiting for you or someone like you."</p>
+        <div class="poem-nav">
+          <a href="../index.html">← Prev</a>
+          <div class="nav-placeholder"></div>
+          <a href="../index.html">Next →</a>
+        </div>
+      </footer>
+    </article>
+  </main>
+  <script src="../js/poems.js"></script>
+  <script src="../js/poem-nav.js"></script>
+  <script src="../js/scroll-reveal.js"></script>
+  <script src="../js/bg-anim.js"></script>
+</body>
+</html>

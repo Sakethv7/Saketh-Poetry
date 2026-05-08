@@ -15,3 +15,6 @@ build/
 
 # Logs
 *.log
+
+# Private poet notes — never commit
+POEMS_NOTES.md
