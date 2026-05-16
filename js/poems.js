@@ -23,6 +23,7 @@ window.POEMS = [
   { slug: 'once-again',                  title: 'Once Again' },
   // English — Lyric Ode
   { slug: 'my-dear-melancholy',          title: 'My Dear Melancholy' },
+  { slug: 'the-longer-route',            title: 'The Longer Route' },
   // English — Prose Poem
   { slug: 'gazing-at-flowers',           title: 'Gazing at Flowers' },
   { slug: 'a-wandering-taxi',            title: 'A Wandering Taxi' },
