@@ -232,6 +232,54 @@
       padding: 0.2rem 0.65rem;
     }
 
+    /* ── filter bar ── */
+    .filter-bar {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .filter-btn {
+      font-family: var(--font-sans);
+      font-size: 0.66rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 0.28rem 0.7rem;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--text-secondary);
+      color: var(--text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--text-primary);
+      color: #F4EEE2;
+      border-color: var(--text-primary);
+    }
+
+    .filter-sep {
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      color: var(--border-color);
+      margin: 0 0.2rem;
+      user-select: none;
+    }
+
+    .poems-grid > .lang-divider.fhide,
+    .poems-grid > .form-divider.fhide,
+    .poems-grid > .poem-card.fhide {
+      display: none;
+    }
+
     /* ── site footer ── */
     .site-footer {
       background: #F4EEE2;
@@ -279,6 +327,9 @@
   <section id="poems">
     <div class="poems-inner">
       <div class="poems-grid">
+
+        <!-- Filter bar (populated by JS) -->
+        <div class="filter-bar" id="filterBar"></div>
 
         <!-- English -->
         <div class="lang-divider"><span class="lang-name">English</span></div>
@@ -665,6 +716,86 @@
       © 2026 Wandering Poet — An Anthology
     </footer>
   </section>
+
+  <script>
+    (function () {
+      const grid  = document.querySelector('.poems-grid');
+      const bar   = document.getElementById('filterBar');
+      const nodes = Array.from(grid.children);
+
+      // Walk the DOM once to tag every card with its lang + form
+      let lang = '', form = '';
+      nodes.forEach(n => {
+        if (n.classList.contains('lang-divider')) lang = n.querySelector('.lang-name').textContent.trim();
+        if (n.classList.contains('form-divider')) form = n.querySelector('.form-label').textContent.trim();
+        if (n.classList.contains('poem-card')) {
+          n.dataset.lang = lang;
+          n.dataset.form = form;
+        }
+      });
+
+      // Collect unique forms per language (preserving DOM order)
+      lang = '';
+      const langs = ['English', 'Hindi · Urdu'];
+      const formsPerLang = { 'English': [], 'Hindi · Urdu': [] };
+      nodes.forEach(n => {
+        if (n.classList.contains('lang-divider')) lang = n.querySelector('.lang-name').textContent.trim();
+        if (n.classList.contains('form-divider') && lang) {
+          const f = n.querySelector('.form-label').textContent.trim();
+          if (!formsPerLang[lang].includes(f)) formsPerLang[lang].push(f);
+        }
+      });
+
+      // Build filter buttons
+      function makeBtn(label, filterVal) {
+        const b = document.createElement('button');
+        b.className = 'filter-btn';
+        b.textContent = label;
+        b.dataset.filter = filterVal;
+        b.addEventListener('click', () => applyFilter(filterVal));
+        return b;
+      }
+
+      bar.appendChild(makeBtn('All', 'all')).classList.add('active');
+
+      langs.forEach((l, i) => {
+        if (i > 0) bar.appendChild(Object.assign(document.createElement('span'), { className: 'filter-sep', textContent: '—' }));
+        bar.appendChild(makeBtn(l, 'lang:' + l));
+        formsPerLang[l].forEach(f => bar.appendChild(makeBtn(f, 'form:' + f)));
+      });
+
+      function applyFilter(val) {
+        bar.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === val));
+
+        // First pass: determine which langs/forms have at least one visible card
+        const visibleLangs = new Set(), visibleForms = new Set();
+        nodes.forEach(n => {
+          if (!n.classList.contains('poem-card')) return;
+          let show = val === 'all'
+            || (val.startsWith('lang:') && n.dataset.lang === val.slice(5))
+            || (val.startsWith('form:') && n.dataset.form === val.slice(5));
+          if (show) { visibleLangs.add(n.dataset.lang); visibleForms.add(n.dataset.form); }
+        });
+
+        // Second pass: apply fhide class
+        nodes.forEach(n => {
+          if (n.classList.contains('filter-bar')) return;
+          if (n.classList.contains('lang-divider')) {
+            const l = n.querySelector('.lang-name').textContent.trim();
+            n.classList.toggle('fhide', !visibleLangs.has(l));
+          } else if (n.classList.contains('form-divider')) {
+            const f = n.querySelector('.form-label').textContent.trim();
+            n.classList.toggle('fhide', !visibleForms.has(f));
+          } else if (n.classList.contains('poem-card')) {
+            const show = val === 'all'
+              || (val.startsWith('lang:') && n.dataset.lang === val.slice(5))
+              || (val.startsWith('form:') && n.dataset.form === val.slice(5));
+            n.classList.toggle('fhide', !show);
+          }
+        });
+      }
+    })();
+  </script>
 
   <script src="js/quotes.js"></script>
   <script>

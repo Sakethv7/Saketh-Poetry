@@ -1,57 +1,52 @@
 # Wandering Poet
 
-A beautifully crafted portfolio of 11 poems across four emotional landscapes: mourning, obsession, classical ghazals, and hope. Each poem lives on its own atmospheric page, with colors and aesthetics tailored to its essence.
+A portfolio of 69 poems across English and Hindi · Urdu, organized by literary form. Each poem lives on its own atmospheric page with colors and aesthetics tailored to its essence.
 
-## 📖 The Collection
+## The Collection
 
-### Mourning Cycle (4 poems)
-- **Empty Reasons** — Loss through seasons, the blue umbrella refrain
-- **Tale of the Wandering Poet** — Which versions of you remain?
-- **My Dear Melancholy** — A dialogue with sorrow itself
-- **The Girl with a Cat Named Whiskey** — Sugarless coffee and fading warmth
+### English (53 poems)
 
-### Obsession & Denial (2 poems)
-- **It's Not As If** — Denial as the truest confession
-- **तुम्हारी यादें** — Hindi: Memories of you, through seasons
+| Form | Poems |
+|---|---|
+| **Free Verse** (15) | Tale of the Wandering Poet, The Hairpin, In the Rain, September, A Ring in the Rain, Jessie, Does the Rain Ever Fall on Us, Lost at Sea, Almost Blue, Eyes Almost Blue, Once More, 11th of April, Simple Twist of Fate, The Café in March, Only the Garden Roses Were Listening |
+| **Anaphoric Verse** (3) | It's Not As If, Regret, Once Again |
+| **Lyric Ode** (1) | My Dear Melancholy |
+| **Lyric Meditation** (1) | The Longer Route |
+| **Prose Poem** (2) | Gazing at Flowers, A Wandering Taxi |
+| **Narrative Verse** (8) | At the Turn of a Hill, The Girl with a Cat Named Whiskey, Tokyo, The Woman Who Brought Spring, The Warden's Garden, The Tattered Page, The Blue Scarf, A Beautiful Curse |
+| **Rhymed Verse · ABAB** (13) | Empty Reasons, After Many Seasons, Red Sweater, Almere's Fair, The Bar Under a Lonely Star, Homeward Bound, A Rainy Day of July, The Gardner, The Green Umbrella, Painting Her, I've Known Life, Dusky Window, Before We Grey |
+| **Waka** (1) | Garden of Words |
 
-### Ghazals (3 poems)
-Classical form, each a meditation on loss and longing:
-- **Saboot** — Proof that love is real
-- **Shaam-e-Gham** — Sorrow of the evening
-- **Dariya** — The river of memory
+### Hindi · Urdu (16 poems)
 
-### Hope & Reunion (2 poems)
-- **At the Turn of a Hill** — A chance encounter, flowers, and new beginnings
-- **After Many Seasons** — Reunion, acceptance, umbrellas finding companions
+| Form | Poems |
+|---|---|
+| **Ghazal** (12) | Saboot, Dariya, Hum Kahan Jayenge, Kuch Lafz, Door Jaake Basi, Shayad, Jaayega Kahan Ab, Hawa Ke Dastaan, Udaasi Ka Itiraf, Khaali Gali, Intezaar, Sardi Ka Mahina |
+| **Nazm** (13) | Shaam-e-Gham, तुम्हारी यादें, Pehele Aur Fir, Shaam Samay, Aangan Ke Phool, Naya Rang, Anjaan Sheher, Jaan-e-Baharan, Ghaav Ki Khushboo, Bekashi Ka Saya, Aadat, Khawab Ki Dakhili, Patjhad Ka Parichay |
+| **Nathar Nazm** (1) | Jhuti Tasalli |
 
 ---
 
-## 🎨 Design
+## Design
 
 Each poem has its own color palette and atmosphere:
-- **Typography**: Serif (Lora) for poetry, sans-serif (Poppins) for UI
+- **Typography**: Lora (serif) for poetry, Playfair Display (display headings), Poppins (sans-serif UI)
 - **Layout**: Centered reading columns, generous whitespace, stanza markers (Roman numerals)
 - **Aesthetics**: Warm parchment backgrounds with unique color gradients per poem
-- **Responsiveness**: Mobile-first, adapts beautifully to all screen sizes
+- **Responsiveness**: Mobile-first, adapts to all screen sizes
+- **Animation**: Canvas-based atmospheric backgrounds (rain, leaves, petals, fireflies, stars, mist, etc.) per poem
 
 See **CONCEPTS.md** for full design philosophy and technical architecture.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### Local Development
 No build step required — just open `index.html` in your browser.
 
 ```bash
-# Clone the repo
-git clone https://github.com/yourusername/saketh-poetry.git
+git clone https://github.com/sakethv7/saketh-poetry.git
 cd saketh-poetry
-
-# Open in browser (macOS)
-open index.html
-
-# Or use a simple server (Python 3)
 python3 -m http.server 8000
 # Visit http://localhost:8000
 ```
@@ -59,131 +54,83 @@ python3 -m http.server 8000
 ### File Structure
 ```
 saketh-poetry/
-├── index.html                    # Homepage with all poems
-├── poems/
-│   ├── empty-reasons.html
-│   ├── tale-of-wandering-poet.html
-│   ├── my-dear-melancholy.html
-│   ├── tumhari-yaadein.html
-│   ├── at-the-turn-of-a-hill.html
-│   ├── it-not-as-if.html
-│   ├── saboot.html
-│   ├── girl-with-cat-named-whiskey.html
-│   ├── shaam-e-gham.html
-│   ├── dariya.html
-│   └── after-many-seasons.html
+├── index.html               # Homepage — all poems with filter bar
+├── poems/                   # 69 individual poem HTML files
 ├── css/
-│   └── style.css                 # Global styles & typography
-├── README.md                      # This file
-└── CONCEPTS.md                    # Design & architecture docs
+│   └── style.css            # Global styles & typography
+├── js/
+│   ├── poems.js             # Canonical poem list (slug + title)
+│   ├── quotes.js            # Rotating quote pool for landing page
+│   ├── poem-nav.js          # Auto-generated prev/next navigation
+│   ├── bg-anim.js           # Canvas atmospheric animations
+│   └── scroll-reveal.js     # Intersection Observer scroll-fade
+├── README.md
+└── CONCEPTS.md              # Design philosophy & architecture
 ```
 
 ---
 
-## 📦 Deployment to GitHub Pages
+## Deployment
 
-### 1. Create a GitHub Repository
-```bash
-# Initialize git (if not already done)
-git config --global user.name "Your Name"
-git config --global user.email "your.email@example.com"
-git add .
-git commit -m "Initial commit: Poetry portfolio"
-git branch -M main
-git remote add origin https://github.com/yourusername/saketh-poetry.git
-git push -u origin main
-```
+Hosted on GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`).
 
-### 2. Enable GitHub Pages
-1. Go to your repository on GitHub
-2. Settings → Pages
-3. Select **Source**: `Deploy from a branch`
-4. Select **Branch**: `main` → `/root`
-5. Click **Save**
-
-Your site will be live at: `https://yourusername.github.io/saketh-poetry`
-
-### 3. Custom Domain (Optional)
-In **Settings → Pages**, add your custom domain under **Custom domain** and follow GitHub's DNS setup instructions.
+To deploy your own fork:
+1. Push to GitHub
+2. Settings → Pages → Source: `Deploy from a branch` → `main` / `root`
+3. Live at `https://yourusername.github.io/saketh-poetry`
 
 ---
 
-## ✨ Features
+## Features
 
-- **No JavaScript Framework** — Pure HTML, CSS. Fast, lightweight, reliable.
-- **Responsive Design** — Works beautifully on mobile, tablet, desktop
-- **Print-Friendly** — Each poem prints perfectly
+- **No JavaScript Framework** — Pure HTML/CSS/JS. Fast, lightweight, reliable.
+- **Filter by language or form** — Filter bar on the homepage for quick navigation across 69 poems
+- **Responsive** — Mobile, tablet, desktop
+- **Per-poem theming** — Each card and poem page has a unique color palette
+- **Atmospheric backgrounds** — Canvas animations tuned to each poem's mood
+- **Rotating quotes** — Landing page cycles lines from the anthology
+- **Automatic nav** — Prev/next links derived from canonical poem list
+- **Print-friendly** — Each poem prints cleanly
 - **Accessibility** — Semantic HTML, high contrast, keyboard navigation
-- **Dark Mode Support** — Automatic based on system preference (optional CSS media query)
-- **Fast Load Times** — ~15KB total assets, served instantly
-- **SEO-Friendly** — Clean URLs, semantic structure, Open Graph tags
+- **SEO** — Open Graph meta tags, clean URLs
 
 ---
 
-## 🎯 Future Enhancements
+## Future Enhancements
 
 - [ ] Dark mode toggle
-- [ ] Search/filter by category or language
-- [ ] Reading time estimates per poem
-- [ ] Audio recordings (poet reciting each poem)
-- [ ] Social sharing buttons (individual poem links)
+- [ ] Reading time estimate per poem
 - [ ] Poem metadata (date written, inspiration notes)
-- [ ] Visitor analytics (light, privacy-respecting)
-- [ ] Email subscription for new poems
+- [ ] Audio recordings (poet reciting each poem)
+- [ ] Social sharing buttons
 
 ---
 
-## 💭 About This Collection
+## Notes on Forms
 
-These 11 poems trace a journey through loss, obsession, and ultimately, hope. Written across different moods and time periods, they experiment with form (from free verse to classical ghazals), language (English and Hindi), and emotional register.
+**Ghazal** — Classical Urdu/Persian form: couplets (*shers*) that can stand alone, a strict rhyme-and-refrain scheme (*radif-qafia*), and a closing signature couplet (*makhta*). Ancient form experiencing a revival in contemporary Hindi/Urdu poetry.
 
-The collection is organized not chronologically, but thematically — creating a arc that begins in mourning, deepens into obsession, explores the classical weight of ghazals, and emerges into hope.
+**Nazm** — Modern Urdu/Hindi lyric poem with a unified theme across stanzas, unlike the autonomous couplets of the ghazal.
 
----
+**Nathar Nazm** — Urdu prose poem: the lyric impulse of a nazm written in flowing prose rather than metered verse.
 
-## 📝 Notes on the Ghazals
+**Waka** — Classical Japanese short form (31 syllables, 5-7-5-7-7). *Garden of Words* is the only poem here in this form.
 
-Three of these poems follow the classical **ghazal** form:
-- A series of couplets (called *shers*) that can stand alone
-- A rhyme scheme (radif-qafia): repetition of a word at the end of each couplet
-- A signature couplet at the end (the *makhta*), where the poet signs their name
-- Each couplet is autonomous; you can read them in any order
+**Anaphoric Verse** — Poems built on deliberate repetition of an opening phrase at the start of successive lines (*anaphora*). The repeated phrase creates cumulative emotional pressure.
 
-This ancient form, originating in Arabic and refined in Urdu and Persian poetry, is experiencing a revival in contemporary English and Hindi poetry.
+**Lyric Ode** — Direct address to an abstraction or personified subject. *My Dear Melancholy* speaks to sorrow itself.
 
----
+**Lyric Meditation** — Sustained first-person reflection on a single image or walk, no narrative arc, just deepening attention.
 
-## 🛠 Built With
-
-- **HTML5** — Semantic structure
-- **CSS3** — Gradients, variables, responsive design
-- **Google Fonts** — Lora, Playfair Display, Poppins
-- **GitHub Pages** — Free, fast hosting
+**Prose Poem** — Reads like prose but is organized by image and rhythm rather than syntax or argument.
 
 ---
 
-## 📄 License
+## License
 
-These poems are original works by Wandering Poet. Please ask before republishing or adapting them.
-
-The website code is available for modification and reuse — fork it, remix it, adapt it for your own poetry.
-
----
-
-## 👤 Author
-
-**Wandering Poet** — Poet, builder, wanderer. Working on FactoryMind (hardware + agentic AI). Building toward AI × hardware founder work.
+Poems are original works by Wandering Poet. Please ask before republishing.
+Website code is available for modification and reuse.
 
 ---
 
-## 🤝 Contributing
-
-Found a typo? Have a suggestion for the design or typography? Open an issue or pull request.
-
----
-
-**Last updated:** April 2026
-
----
-
-*Read the poems. Sit with them. Let them settle. That's the only instruction.*
+*Read the poems. Sit with them. Let them settle.*
