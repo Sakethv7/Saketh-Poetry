@@ -370,21 +370,34 @@ footer {
   min-width: 1ch;
 }
 
-.write-link {
-  font-family: var(--font-sans);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  text-decoration: none;
-  opacity: 0.7;
-  transition: opacity 0.18s, color 0.18s;
+.site-footer-contact {
+  margin-top: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
 }
 
-.write-link:hover {
-  opacity: 1;
-  color: var(--text-primary);
+.contact-link {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  opacity: 0.55;
+  transition: opacity 0.18s;
 }
+
+.contact-link:hover { opacity: 1; }
+
+/* poem pages — transparent footer inherits poem atmosphere */
+.poem-page-footer {
+  background: transparent;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.poem-page-footer .contact-link { color: var(--text-secondary); }
 
 /* Print styles */
 @media print {
