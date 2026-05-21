@@ -300,7 +300,7 @@
 
     <nav class="top-nav">
       <span>An Anthology</span>
-      <span>69 poems</span>
+      <span id="poem-count"></span>
     </nav>
 
     <div class="quote-stage">
@@ -725,6 +725,11 @@
       const grid  = document.querySelector('.poems-grid');
       const bar   = document.getElementById('filterBar');
       const nodes = Array.from(grid.children);
+
+      // Dynamic poem count in nav
+      const total = nodes.filter(n => n.classList.contains('poem-card')).length;
+      const countEl = document.getElementById('poem-count');
+      if (countEl) countEl.textContent = total + ' poems';
 
       // Walk the DOM once to tag every card with its lang + form
       let lang = '', form = '';
