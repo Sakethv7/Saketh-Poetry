@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wandering Poet — An Anthology</title>
-  <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=7">
   <style>
     body { background: #F4EEE2; }
 
@@ -76,15 +76,18 @@
     /* the rotating poem line */
     .quote-wrap {
       position: relative;
-      width: min(680px, 88vw);
-      min-height: 7rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: min(980px, 92vw);
+      min-height: clamp(7rem, 18vh, 12rem);
+      display: grid;
+      place-items: center;
     }
 
     .q {
       position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: var(--font-serif);
       font-style: italic;
       font-size: clamp(1.25rem, 3.2vw, 1.9rem);
@@ -96,7 +99,11 @@
       letter-spacing: 0.01em;
     }
 
-    .q.on { opacity: 1; }
+    .q.on {
+      position: relative;
+      inset: auto;
+      opacity: 1;
+    }
 
     /* source of quote */
     .q-source {
@@ -145,6 +152,10 @@
       align-items: center;
       gap: 0.5rem;
       cursor: pointer;
+      border: 0;
+      padding: 0;
+      color: inherit;
+      background: transparent;
     }
 
     .scroll-track {
@@ -180,45 +191,197 @@
     /* ════════════════════════════════
        POEMS SECTION
     ════════════════════════════════ */
-    .poems-section {
-      background: #F4EEE2;
+    #poems {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, #100905 0%, #261509 18rem, #DCC8A6 42rem, #EFE4D1 100%);
       border-top: 1px solid rgba(160,130,80,0.15);
     }
 
+    #poems::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(ellipse 42rem 20rem at 32% 4rem, rgba(210,144,72,0.2), transparent 72%),
+        radial-gradient(ellipse 30rem 22rem at 82% 17rem, rgba(76,96,72,0.16), transparent 70%),
+        linear-gradient(180deg, rgba(16,9,5,0.94) 0%, rgba(36,20,10,0.78) 20rem, rgba(212,189,151,0.74) 43rem, rgba(238,226,207,0.96) 100%);
+      opacity: 0.95;
+      pointer-events: none;
+    }
+
+    #poems::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 78% 20rem at 42% 7rem, rgba(236,169,84,0.18), transparent 70%),
+        radial-gradient(ellipse 42rem 26rem at 5% 30rem, rgba(46,84,66,0.16), transparent 68%),
+        radial-gradient(ellipse 34rem 22rem at 92% 20rem, rgba(171,54,38,0.12), transparent 70%),
+        repeating-linear-gradient(0deg, transparent 0 2.15rem, rgba(100,65,34,0.12) 2.18rem, transparent 2.23rem),
+        repeating-linear-gradient(90deg, transparent 0 7.5rem, rgba(86,55,30,0.055) 7.55rem, transparent 7.65rem);
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+
     .poems-inner {
-      max-width: 1100px;
+      position: relative;
+      z-index: 1;
+      max-width: 1540px;
       margin: 0 auto;
-      padding: clamp(4rem, 8vw, 6rem) clamp(2rem, 5vw, 4rem);
+      padding: clamp(4.5rem, 8vw, 7rem) clamp(1.25rem, 4vw, 4rem) clamp(4rem, 8vw, 6rem);
+      display: grid;
+      grid-template-columns: minmax(230px, 320px) minmax(0, 1fr);
+      gap: clamp(1.25rem, 3vw, 2.5rem);
+      align-items: start;
+    }
+
+    .library-header {
+      display: grid;
+      gap: 1.6rem;
+      align-items: start;
+      position: sticky;
+      top: 1.5rem;
+      color: rgba(255,246,232,0.9);
+      text-shadow: 0 2px 24px rgba(18,10,5,0.62);
+    }
+
+    .library-kicker,
+    .search-meta,
+    .poem-search span {
+      font-family: var(--font-sans);
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .library-kicker {
+      display: block;
+      color: rgba(255,228,190,0.66);
+      margin-bottom: 0.7rem;
+    }
+
+    .library-header h2 {
+      font-size: clamp(2rem, 4vw, 3.35rem);
+      line-height: 0.95;
+      color: rgba(255,244,224,0.94);
+      margin: 0;
+    }
+
+    .poem-search {
+      width: 100%;
+      display: grid;
+      gap: 0.45rem;
+      color: rgba(255,228,190,0.66);
+    }
+
+    .poem-search input {
+      width: 100%;
+      min-height: 3rem;
+      border: 1px solid rgba(255,222,178,0.34);
+      border-radius: 3px;
+      background:
+        linear-gradient(180deg, rgba(255,247,232,0.9), rgba(217,179,123,0.34)),
+        rgba(34,20,10,0.24);
+      color: #2A1A10;
+      font: 500 0.95rem var(--font-sans);
+      letter-spacing: 0;
+      padding: 0.75rem 1rem;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.62), 0 14px 34px rgba(18,10,5,0.2);
+    }
+
+    .poem-search input:focus {
+      border-color: rgba(255,226,181,0.74);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), 0 0 0 3px rgba(219,156,78,0.2), 0 14px 34px rgba(18,10,5,0.22);
+    }
+
+    .poem-search input::placeholder {
+      color: rgba(45,34,27,0.62);
+      opacity: 1;
+    }
+
+    .search-meta {
+      color: rgba(255,228,190,0.62);
+      margin-top: -0.95rem;
+      text-shadow: 0 2px 18px rgba(18,10,5,0.5);
+    }
+
+    .poems-grid {
+      grid-column: 2;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.35rem 1rem;
+      margin-top: 0;
+      padding: clamp(1.2rem, 3vw, 2rem);
+      position: relative;
+      border: 1px solid rgba(65,37,18,0.28);
+      border-radius: 3px;
+      background:
+        radial-gradient(ellipse 52rem 18rem at 18% 2rem, rgba(227,157,79,0.17), transparent 72%),
+        repeating-linear-gradient(
+          to bottom,
+          rgba(80,43,18,0.12) 0,
+          rgba(80,43,18,0.12) 2px,
+          transparent 2px,
+          transparent 17.5rem,
+          rgba(53,29,13,0.55) 17.5rem,
+          rgba(53,29,13,0.55) 18.15rem,
+          rgba(153,96,39,0.34) 18.15rem,
+          rgba(153,96,39,0.34) 18.45rem
+        ),
+        linear-gradient(90deg, rgba(60,34,17,0.18), transparent 9%, transparent 91%, rgba(60,34,17,0.18)),
+        linear-gradient(180deg, #8A5A2E, #5B3518);
+      box-shadow:
+        inset 0 0 0 8px rgba(49,28,14,0.18),
+        inset 0 18px 60px rgba(255,220,153,0.11),
+        0 28px 90px rgba(30,16,8,0.3);
+    }
+
+    .poems-grid::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 3px;
+      background:
+        linear-gradient(90deg, rgba(18,10,5,0.28), transparent 9%, transparent 91%, rgba(18,10,5,0.32)),
+        repeating-linear-gradient(90deg, transparent 0 5.7rem, rgba(255,228,178,0.035) 5.75rem, transparent 5.82rem);
+      pointer-events: none;
     }
 
     .lang-divider {
       grid-column: 1 / -1;
-      margin: 2.5rem 0 0.5rem;
+      margin: 2.7rem 0 0.15rem;
       display: flex;
       align-items: center;
       gap: 1.25rem;
     }
 
-    .lang-divider:first-child { margin-top: 0; }
+    .lang-divider:first-child { margin-top: 0.2rem; }
 
     .lang-name {
       font-family: var(--font-display);
-      font-size: 1.6rem;
+      font-size: clamp(1.35rem, 3vw, 2rem);
       font-weight: 700;
-      color: var(--text-primary);
+      color: rgba(255,244,222,0.9);
       white-space: nowrap;
+      text-shadow: 0 2px 14px rgba(0,0,0,0.36);
     }
 
     .lang-divider::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: var(--border-color);
+      background: rgba(255,232,190,0.24);
     }
 
     .form-divider {
       grid-column: 1 / -1;
-      margin: 1.5rem 0 -0.5rem;
+      margin: 0.7rem 0 -0.2rem;
     }
 
     .form-label {
@@ -227,9 +390,117 @@
       font-size: 0.68rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--text-secondary);
-      border: 1px solid var(--border-color);
-      padding: 0.2rem 0.65rem;
+      color: rgba(255,236,200,0.76);
+      border: 1px solid rgba(255,232,190,0.26);
+      background: rgba(52,29,13,0.42);
+      padding: 0.28rem 0.7rem;
+    }
+
+    #poems .poem-card {
+      z-index: 1;
+      min-height: 15.8rem;
+      padding: 1.3rem 1.15rem 1.2rem 1.35rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-left: 0.55rem solid var(--card-accent, #B89455);
+      border-radius: 3px 6px 6px 3px;
+      background: var(--card-bg);
+      box-shadow:
+        inset 10px 0 18px rgba(0,0,0,0.2),
+        inset -8px 0 18px rgba(255,255,255,0.06),
+        0 12px 18px rgba(35,19,9,0.34);
+      transform-origin: bottom center;
+    }
+
+    #poems .poem-card:nth-of-type(3n) { transform: translateY(0.18rem) rotate(-0.35deg); }
+    #poems .poem-card:nth-of-type(4n) { transform: translateY(-0.1rem) rotate(0.28deg); }
+    #poems .poem-card:nth-of-type(5n) { transform: translateY(0.08rem) rotate(0.18deg); }
+
+    #poems .poem-card::before {
+      left: 0;
+      width: 100%;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.08), transparent 18%, transparent 82%, rgba(0,0,0,0.18)),
+        repeating-linear-gradient(90deg, transparent 0, transparent 34px, rgba(255,255,255,0.035) 35px, transparent 37px);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    #poems .poem-card:hover {
+      border-color: rgba(255,255,255,0.22);
+      border-left-color: var(--card-accent, #D0A85E);
+      box-shadow:
+        inset 10px 0 18px rgba(0,0,0,0.18),
+        inset -8px 0 18px rgba(255,255,255,0.08),
+        0 20px 34px rgba(30,16,8,0.42);
+      transform: translateY(-0.35rem) rotate(0deg);
+    }
+
+    #poems .poem-card:hover::before {
+      left: 0;
+    }
+
+    #poems .poem-card .poem-category {
+      position: relative;
+      z-index: 1;
+      font-size: 0.63rem;
+      margin-bottom: 1.5rem;
+    }
+
+    #poems .poem-card h2 {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(1.18rem, 2vw, 1.65rem);
+      line-height: 1.15;
+      margin-bottom: 0.8rem;
+      overflow-wrap: anywhere;
+    }
+
+    #poems .poem-card p {
+      position: relative;
+      z-index: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: 0.86rem;
+      line-height: 1.58;
+    }
+
+    #poems [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 760px) {
+      .poems-inner {
+        display: block;
+        padding-top: 3.5rem;
+      }
+
+      .library-header {
+        position: static;
+        margin-bottom: 0.75rem;
+      }
+
+      .search-meta {
+        margin: -0.65rem 0 1.25rem;
+      }
+
+      .poems-grid {
+        grid-column: auto;
+        grid-row: auto;
+        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+        padding: 1rem;
+        gap: 1rem 0.75rem;
+      }
+
+      #poems .poem-card {
+        min-height: 13.5rem;
+        padding: 1.05rem 0.9rem 1rem 1rem;
+      }
+
+      #poems .poem-card p {
+        -webkit-line-clamp: 4;
+      }
     }
 
     /* ── filter bar ── */
@@ -282,8 +553,8 @@
 
     /* ── site footer ── */
     .site-footer {
-      background: #F4EEE2;
-      border-top: 1px solid rgba(160,130,80,0.15);
+      background: rgba(239,228,209,0.72);
+      border-top: 1px solid rgba(111,70,34,0.12);
       text-align: center;
       padding: 2.5rem 2rem 3.5rem;
       font-family: var(--font-sans);
@@ -291,16 +562,235 @@
       letter-spacing: 0.05em;
       color: rgba(90,68,38,0.4);
     }
+
+    /* Full-page illustrated library */
+    #poems {
+      height: 100svh;
+      min-height: 42rem;
+      background-image:
+        linear-gradient(90deg, rgba(7,9,8,0.5), rgba(7,9,8,0.16) 28%, rgba(7,9,8,0.22) 72%, rgba(7,9,8,0.52)),
+        url('assets/art/delhi-poetry-bookstore.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    #poems::before {
+      background: linear-gradient(180deg, rgba(7,8,7,0.25), rgba(9,7,5,0.66));
+      opacity: 1;
+    }
+
+    #poems::after {
+      background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,244,220,0.018) 3px 4px);
+      mix-blend-mode: screen;
+    }
+
+    .poems-inner {
+      height: calc(100svh - 3.2rem);
+      min-height: 38.8rem;
+      padding-top: clamp(1.5rem, 4vh, 3rem);
+      padding-bottom: 1.25rem;
+    }
+
+    .library-header {
+      top: 0;
+      padding: 1.25rem;
+      border-left: 2px solid rgba(223,157,73,0.64);
+      background: rgba(10,12,10,0.62);
+      backdrop-filter: blur(7px);
+      box-shadow: 0 22px 60px rgba(0,0,0,0.28);
+    }
+
+    .poems-grid {
+      height: 100%;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-color: rgba(221,158,77,0.58) rgba(20,12,7,0.35);
+      background:
+        repeating-linear-gradient(to bottom, transparent 0 17.3rem, rgba(45,24,11,0.85) 17.3rem 18.25rem),
+        linear-gradient(90deg, rgba(30,17,9,0.82), rgba(99,60,29,0.74) 8%, rgba(71,39,18,0.68) 92%, rgba(25,14,8,0.86));
+      backdrop-filter: blur(2px);
+    }
+
+    .site-footer {
+      height: 3.2rem;
+      padding: 1.05rem 2rem;
+      color: rgba(245,226,193,0.58);
+      background: rgba(8,7,6,0.88);
+    }
+
+    .book-reader[hidden] { display: none; }
+
+    .book-reader {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: clamp(1rem, 4vw, 4rem);
+      background: rgba(5,7,7,0.78);
+      backdrop-filter: blur(12px);
+    }
+
+    .book-reader__close {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      width: 2.75rem;
+      height: 2.75rem;
+      border: 1px solid rgba(255,244,220,0.28);
+      border-radius: 50%;
+      color: #fff8e8;
+      background: rgba(15,12,9,0.76);
+      font: 1.4rem/1 var(--font-sans);
+      cursor: pointer;
+    }
+
+    .open-book {
+      position: relative;
+      width: min(72rem, 94vw);
+      height: min(48rem, 84vh);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      color: #342a20;
+      filter: drop-shadow(0 35px 55px rgba(0,0,0,0.48));
+      transform-origin: center bottom;
+      animation: open-volume 520ms cubic-bezier(.2,.75,.2,1) both;
+    }
+
+    .open-book::before {
+      content: '';
+      position: absolute;
+      inset: -0.7rem -0.85rem;
+      z-index: -1;
+      border-radius: 8px 14px 14px 8px;
+      background: #314b3c;
+      box-shadow: inset 0 0 0 2px rgba(237,196,112,0.26);
+    }
+
+    .book-page {
+      min-width: 0;
+      overflow-y: auto;
+      padding: clamp(2rem, 5vw, 4.8rem);
+      background:
+        radial-gradient(circle at 15% 12%, rgba(181,133,64,0.09), transparent 25%),
+        repeating-linear-gradient(0deg, transparent 0 2rem, rgba(92,68,42,0.035) 2rem 2.04rem),
+        #efe4cb;
+      box-shadow: inset 0 0 3rem rgba(93,59,28,0.12);
+    }
+
+    .book-page--title {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 5px 0 0 5px;
+      text-align: center;
+      box-shadow: inset -1.8rem 0 2.8rem rgba(78,52,28,0.13);
+    }
+
+    .book-page--poem {
+      border-radius: 0 5px 5px 0;
+      box-shadow: inset 1.8rem 0 2.8rem rgba(78,52,28,0.12);
+    }
+
+    .book-page--poem::before {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      bottom: 1.5rem;
+      left: 50%;
+      width: 1px;
+      background: rgba(91,59,31,0.18);
+      box-shadow: 0 0 18px 8px rgba(73,46,24,0.09);
+    }
+
+    .book-chapter,
+    .book-form,
+    .book-folio {
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8a5a38;
+    }
+
+    .book-title {
+      margin: 1.2rem 0;
+      font: 500 clamp(2rem, 5vw, 4.5rem)/1.03 var(--font-serif);
+      letter-spacing: 0;
+    }
+
+    .book-mobile-title { display: none; }
+
+    .book-subtitle {
+      max-width: 28rem;
+      margin: 0 auto;
+      font: italic 1rem/1.7 var(--font-serif);
+      color: #735f4b;
+    }
+
+    .book-poem-content {
+      font: 1.02rem/1.85 var(--font-serif);
+    }
+
+    .book-poem-content .stanza { margin: 0 0 2rem; }
+    .book-poem-content .stanza-num { color: #a46a3e; font-size: 0.66rem; }
+    .book-poem-content p { margin: 0; }
+    .book-poem-content .divider { margin: 1.4rem 0; color: #b58758; }
+
+    .book-folio {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2.5rem;
+    }
+
+    .book-folio a { color: inherit; }
+
+    @keyframes open-volume {
+      from { opacity: 0; transform: perspective(1200px) rotateX(12deg) scale(.88); }
+      to { opacity: 1; transform: perspective(1200px) rotateX(0) scale(1); }
+    }
+
+    @media (max-width: 760px) {
+      #poems { min-height: 100svh; }
+      .poems-inner {
+        height: calc(100svh - 3.2rem);
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        padding-top: 1rem;
+      }
+      .library-header { position: relative; padding: 0.9rem; }
+      .poems-grid { flex: 1; height: auto; min-height: 0; overflow-y: auto; }
+      .book-reader { padding: 4.75rem 0.75rem 1rem; }
+      .open-book { width: 100%; height: 82vh; grid-template-columns: 1fr; }
+      .book-page--title { display: none; }
+      .book-page--poem { border-radius: 5px; padding: 2.4rem 1.5rem; }
+      .book-page--poem::before { display: none; }
+      .book-mobile-title {
+        display: block;
+        margin: 0.65rem 0 1.6rem;
+        font: 500 clamp(1.8rem, 9vw, 2.8rem)/1.08 var(--font-serif);
+        letter-spacing: 0;
+        text-transform: none;
+        color: #342a20;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .open-book, .scroll-track::after { animation: none; }
+      .q, .qs { transition: none; }
+    }
   </style>
 </head>
-<body>
+<body data-art="anthology-home">
 
   <!-- ════ OPENING ════ -->
   <section class="opening">
 
     <nav class="top-nav">
       <span>An Anthology</span>
-      <span id="poem-count"></span>
+      <span id="poemCount">Poems</span>
     </nav>
 
     <div class="quote-stage">
@@ -316,16 +806,30 @@
       </div>
     </div>
 
-    <div class="scroll-cue" onclick="document.getElementById('poems').scrollIntoView({behavior:'smooth'})">
+    <button class="scroll-cue" type="button" aria-label="Browse the poetry shelf" onclick="document.getElementById('poems').scrollIntoView({behavior:'smooth'})">
       <div class="scroll-track"></div>
       <span class="scroll-word">read</span>
-    </div>
+    </button>
 
   </section>
 
   <!-- ════ POEMS ════ -->
   <section id="poems">
     <div class="poems-inner">
+      <div class="library-header">
+        <div>
+          <span class="library-kicker">The bookcase</span>
+          <h2>Poems as volumes</h2>
+        </div>
+
+        <label class="poem-search">
+          <span>Search poems</span>
+          <input id="poemSearch" type="search" placeholder="Title, form, language, or line" autocomplete="off">
+        </label>
+
+        <div class="search-meta" id="searchMeta" aria-live="polite">Poems on the shelf</div>
+      </div>
+
       <div class="poems-grid">
 
         <!-- Filter bar (populated by JS) -->
@@ -728,7 +1232,7 @@
 
       // Dynamic poem count in nav
       const total = nodes.filter(n => n.classList.contains('poem-card')).length;
-      const countEl = document.getElementById('poem-count');
+      const countEl = document.getElementById('poemCount');
       if (countEl) countEl.textContent = total + ' poems';
 
       // Walk the DOM once to tag every card with its lang + form
@@ -805,11 +1309,36 @@
     })();
   </script>
 
-  <script src="js/quotes.js"></script>
+  <div class="book-reader" id="bookReader" role="dialog" aria-modal="true" aria-labelledby="bookTitle" hidden>
+    <button class="book-reader__close" id="closeBook" type="button" aria-label="Close book">&times;</button>
+    <article class="open-book">
+      <section class="book-page book-page--title">
+        <span class="book-chapter">From the shelf</span>
+        <h2 class="book-title" id="bookTitle"></h2>
+        <p class="book-subtitle" id="bookSubtitle"></p>
+      </section>
+      <section class="book-page book-page--poem">
+        <span class="book-form" id="bookForm"></span>
+        <h3 class="book-mobile-title" id="bookMobileTitle"></h3>
+        <div class="book-poem-content" id="bookPoem"></div>
+        <div class="book-folio"><span>Wandering Poet</span><a id="openPoemPage" href="#">Open page</a></div>
+      </section>
+    </article>
+  </div>
+
   <script>
     (function () {
-      // Shuffle quotes randomly on every visit
-      const pool = window.QUOTES.slice();
+      // Build quote pool from visible poem cards so it stays in sync with poems.
+      const pool = Array.from(document.querySelectorAll('.poem-card'))
+        .map(card => {
+          const text = card.querySelector('p')?.textContent?.trim();
+          const src = card.querySelector('h2')?.textContent?.trim();
+          return text && src ? { text, src } : null;
+        })
+        .filter(Boolean);
+      if (!pool.length) return;
+
+      // Shuffle randomly on every visit
       for (let k = pool.length - 1; k > 0; k--) {
         const j = Math.floor(Math.random() * (k + 1));
         [pool[k], pool[j]] = [pool[j], pool[k]];
@@ -822,7 +1351,8 @@
       const qEls = pool.map(q => {
         const p = document.createElement('p');
         p.className = 'q';
-        p.innerHTML = q.text;
+        p.textContent = q.text;
+        p.setAttribute('aria-hidden', 'true');
         wrap.appendChild(p);
         return p;
       });
@@ -831,6 +1361,7 @@
         const s = document.createElement('span');
         s.className = 'qs';
         s.textContent = q.src;
+        s.setAttribute('aria-hidden', 'true');
         src.appendChild(s);
         return s;
       });
@@ -839,14 +1370,185 @@
       let i = 0;
       qEls[0].classList.add('on');
       sEls[0].classList.add('on');
+      qEls[0].setAttribute('aria-hidden', 'false');
+      sEls[0].setAttribute('aria-hidden', 'false');
 
       setInterval(() => {
         qEls[i].classList.remove('on');
         sEls[i].classList.remove('on');
+        qEls[i].setAttribute('aria-hidden', 'true');
+        sEls[i].setAttribute('aria-hidden', 'true');
         i = (i + 1) % qEls.length;
         qEls[i].classList.add('on');
         sEls[i].classList.add('on');
+        qEls[i].setAttribute('aria-hidden', 'false');
+        sEls[i].setAttribute('aria-hidden', 'false');
       }, 4500);
+    })();
+
+    (function () {
+      const input = document.getElementById('poemSearch');
+      const meta = document.getElementById('searchMeta');
+      const poemCount = document.getElementById('poemCount');
+      const poemsSection = document.getElementById('poems');
+      const grid = document.querySelector('.poems-grid');
+      const cards = Array.from(document.querySelectorAll('.poem-card'));
+      if (!input || !meta || !grid || !cards.length) return;
+
+      if (poemCount) {
+        poemCount.textContent = `${cards.length} poems`;
+      }
+
+      let currentLanguage = '';
+      Array.from(grid.children).forEach(node => {
+        if (node.classList?.contains('lang-divider')) {
+          currentLanguage = node.textContent.trim();
+        }
+
+        if (node.classList?.contains('poem-card')) {
+          node.dataset.searchText = `${currentLanguage} ${node.textContent}`.toLowerCase();
+        }
+      });
+
+      const setDividerVisibility = query => {
+        Array.from(grid.children).forEach(node => {
+          if (!node.classList?.contains('lang-divider') && !node.classList?.contains('form-divider')) return;
+
+          const stopClass = node.classList.contains('lang-divider') ? 'lang-divider' : 'form-divider';
+          let hasVisiblePoem = false;
+          let next = node.nextElementSibling;
+          while (next && !next.classList.contains(stopClass)) {
+            if (node.classList.contains('form-divider') && next.classList.contains('lang-divider')) break;
+            if (next.classList.contains('poem-card') && !next.hidden) {
+              hasVisiblePoem = true;
+              break;
+            }
+            next = next.nextElementSibling;
+          }
+
+          node.hidden = !hasVisiblePoem;
+        });
+      };
+
+      const updateSearch = () => {
+        const query = input.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+          const visible = !query || card.dataset.searchText.includes(query);
+          card.hidden = !visible;
+          if (visible) visibleCount += 1;
+        });
+
+        setDividerVisibility(query);
+        poemsSection.classList.toggle('is-searching', Boolean(query));
+        meta.textContent = query
+          ? `${visibleCount} poem${visibleCount === 1 ? '' : 's'} found`
+          : `${cards.length} poems on the shelf`;
+      };
+
+      input.addEventListener('input', updateSearch);
+      updateSearch();
+    })();
+
+    (function () {
+      const reader = document.getElementById('bookReader');
+      const closeButton = document.getElementById('closeBook');
+      const title = document.getElementById('bookTitle');
+      const subtitle = document.getElementById('bookSubtitle');
+      const form = document.getElementById('bookForm');
+      const mobileTitle = document.getElementById('bookMobileTitle');
+      const poem = document.getElementById('bookPoem');
+      const pageLink = document.getElementById('openPoemPage');
+      const pageShell = poem.closest('.book-page');
+      const pageContent = document.querySelectorAll('body > .opening, body > #poems');
+      let returnFocus = null;
+      let activeRequest = null;
+      // Artwork remains curated reference material; every shelf volume opens
+      // in the shared book reader until an illustrated mode is reintroduced.
+      const illustratedPoems = new Set();
+
+      const closeBook = () => {
+        activeRequest?.abort();
+        activeRequest = null;
+        reader.hidden = true;
+        document.body.style.overflow = '';
+        pageContent.forEach(node => node.removeAttribute('inert'));
+        returnFocus?.focus();
+      };
+
+      const trapFocus = event => {
+        if (event.key !== 'Tab' || reader.hidden) return;
+        const controls = [closeButton, pageLink].filter(control => !control.hidden);
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      };
+
+      document.querySelectorAll('.poem-card').forEach(card => {
+        const href = card.getAttribute('href');
+        if (illustratedPoems.has(href)) {
+          card.dataset.illustrated = 'true';
+          return;
+        }
+
+        card.addEventListener('click', async event => {
+          event.preventDefault();
+          activeRequest?.abort();
+          activeRequest = new AbortController();
+          const request = activeRequest;
+          returnFocus = card;
+          title.textContent = card.querySelector('h2')?.textContent || 'Untitled';
+          mobileTitle.textContent = title.textContent;
+          subtitle.textContent = 'Opening this volume...';
+          form.textContent = card.querySelector('.poem-category')?.textContent || 'Poem';
+          poem.innerHTML = '<p>Turning the pages...</p>';
+          pageLink.href = href;
+          reader.hidden = false;
+          document.body.style.overflow = 'hidden';
+          pageContent.forEach(node => node.setAttribute('inert', ''));
+          closeButton.focus();
+
+          try {
+            const response = await fetch(href, { signal: request.signal });
+            if (!response.ok) throw new Error(`Could not open ${href}`);
+            const page = new DOMParser().parseFromString(await response.text(), 'text/html');
+            const pageTitle = page.querySelector('.poem-metadata h1');
+            const pageSubtitle = page.querySelector('.poem-subtitle');
+            const pageForm = page.querySelector('.poem-metadata .poem-category');
+            const pagePoem = page.querySelector('.poem-text');
+
+            title.textContent = pageTitle?.textContent?.trim() || title.textContent;
+            mobileTitle.textContent = title.textContent;
+            subtitle.textContent = pageSubtitle?.textContent?.trim() || card.querySelector('p')?.textContent || '';
+            form.textContent = pageForm?.textContent?.trim() || form.textContent;
+            poem.innerHTML = pagePoem?.innerHTML || '<p>This volume could not be read here.</p>';
+            poem.lang = page.documentElement.lang || 'en';
+            pageShell.scrollTop = 0;
+          } catch (error) {
+            if (error.name === 'AbortError') return;
+            subtitle.textContent = card.querySelector('p')?.textContent || '';
+            poem.innerHTML = '<p>This volume is available on its own page.</p>';
+          } finally {
+            if (activeRequest === request) activeRequest = null;
+          }
+        });
+      });
+
+      closeButton.addEventListener('click', closeBook);
+      reader.addEventListener('click', event => {
+        if (event.target === reader) closeBook();
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !reader.hidden) closeBook();
+        trapFocus(event);
+      });
     })();
   </script>
 

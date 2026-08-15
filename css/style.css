@@ -191,6 +191,122 @@ nav a:hover {
   margin-bottom: 1rem;
 }
 
+/* Image-backed poem accents */
+body[data-art="anthology-home"] .opening {
+  background:
+    linear-gradient(180deg, rgba(4,7,8,0.24) 0%, rgba(5,7,7,0.4) 62%, rgba(7,6,5,0.68) 100%),
+    linear-gradient(90deg, rgba(4,7,8,0.34), transparent 24%, transparent 74%, rgba(5,7,7,0.35)),
+    url("../assets/art/delhi-poetry-bookstore.jpg") center / cover no-repeat;
+}
+
+body[data-art="anthology-home"] .top-nav,
+body[data-art="anthology-home"] .stage-label,
+body[data-art="anthology-home"] .q-source,
+body[data-art="anthology-home"] .scroll-word {
+  color: rgba(255,235,201,0.7);
+}
+
+body[data-art="anthology-home"] .q {
+  color: #FFF5DF;
+  text-shadow: 0 3px 18px rgba(0,0,0,0.95), 0 14px 42px rgba(0,0,0,0.78);
+}
+
+body[data-art="anthology-home"] .stage-rule .line {
+  background: rgba(239,188,109,0.42);
+}
+
+body[data-art="anthology-home"] .stage-rule .dot {
+  background: rgba(239,188,109,0.76);
+}
+
+body[data-art-image] {
+  background:
+    linear-gradient(180deg, rgba(7,6,5,0.52) 0%, rgba(7,6,5,0.28) 34%, rgba(7,6,5,0.7) 100%),
+    linear-gradient(90deg, rgba(7,6,5,0.62), transparent 28%, transparent 72%, rgba(7,6,5,0.58)),
+    var(--art-image) var(--art-position, center top) / cover fixed !important;
+}
+
+body[data-art-image] .container {
+  max-width: 76ch;
+}
+
+body[data-art-image] .poem-metadata {
+  min-height: clamp(58vh, 68vw, 78vh);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: clamp(3rem, 8vw, 5.5rem);
+  margin-bottom: clamp(3rem, 7vw, 5rem);
+  border-bottom-color: rgba(255,248,238,0.16);
+}
+
+body[data-art-image] .poem-category,
+body[data-art-image] .poem-subtitle,
+body[data-art-image] h1 {
+  text-shadow: 0 2px 24px rgba(0,0,0,0.68);
+}
+
+body[data-art-image] .poem-text,
+body[data-art-image] footer {
+  background: rgba(10, 8, 7, 0.48);
+  border: 1px solid rgba(255,248,238,0.1);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.26);
+  backdrop-filter: blur(2px);
+}
+
+body[data-art-image] .poem-text {
+  padding: clamp(1.6rem, 4vw, 3rem);
+}
+
+body[data-art-image] footer {
+  padding: 2rem;
+}
+
+body[data-art="mumbai-monsoon-umbrella"] {
+  --art-image: url("../assets/art/green-umbrella-mumbai-monsoon.png");
+}
+
+body[data-art="warden-hairclip"] {
+  --art-image: url("../assets/art/wardens-garden-hairpin-v2.jpg");
+  --art-position: 56% top;
+}
+
+body[data-art="delhi-spring-reunion"] {
+  --art-image: url("../assets/art/woman-spring-delhi-garden.jpg");
+  --art-position: 56% top;
+}
+
+body[data-art="old-delhi-empty-lane"] {
+  --art-image: url("../assets/art/khaali-gali-old-delhi.jpg");
+  --art-position: 68% top;
+}
+
+body[data-art="aangan-single-flower"] {
+  --art-image: url("../assets/art/aangan-single-flower.jpg");
+  --art-position: 58% top;
+}
+
+body[data-art="veteran-rooftop-hairpin"] {
+  --art-image: url("../assets/art/hairpin-rooftop-veteran.jpg");
+  --art-position: 52% top;
+}
+
+body[data-art="barsati-false-consolation"] {
+  --art-image: url("../assets/art/jhuti-tasalli-barsati.jpg");
+  --art-position: 68% top;
+}
+
+@media (max-width: 768px) {
+  body[data-art-image] {
+    background-attachment: scroll !important;
+    background-position: center top !important;
+  }
+
+  body[data-art-image] .poem-metadata {
+    min-height: 58vh;
+  }
+}
+
 /* Footer */
 footer {
   margin-top: 4rem;

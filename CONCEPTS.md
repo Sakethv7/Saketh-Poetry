@@ -27,6 +27,37 @@ Each poem gets a unique color accent and atmospheric quality that mirrors its co
 10. **Dariya** — Deep teal + silver (river metaphor, flowing time)
 11. **After Many Seasons** — Soft lavender + muted gold (reunion, acceptance)
 
+### Selective Art Layer
+The site uses a selective art layer rather than applying illustration to every poem. The direction should be image-backed, painterly, cinematic, warm, textured, and human-scale, but it should stay specific to this anthology rather than copying another project's visual identity.
+
+Art assignment rule:
+```
+Concrete scene or object + real asset -> image-backed art page
+Scene-rich poem without asset -> approved prompt, no placeholder art
+Pure interior confession -> typography-first page
+```
+
+Retained artwork references:
+- **The Green Umbrella** — Indic Mumbai monsoon glow; wet streetlights, bus-stop shade, shopfront, and one saturated green umbrella.
+- **The Warden's Garden** — European wartime garden; a man with a headband on a ladder pruning leaves, looking toward a woman, with the hairclip half-visible in his shirt pocket.
+
+Planned full-art candidates:
+- **Tokyo** — Japanese urban noir; red light, rain, book, lamp, and night city.
+- **The Blue Scarf** — European rainy bus-stop and bookshop, anchored by the blue scarf.
+- **At the Turn of a Hill** — European hill-town flower shop.
+- **Almere's Fair** — Dutch/European fair by a lake.
+- **The Woman Who Brought Spring** — Indic garden and marigold/spring return.
+- **The Tattered Page** — Sepia wartime field sketch, page, tree, and rose.
+- **Painting Her** — European cafe/painter scene with canvas and wine-bottle reflection.
+- **A Wandering Taxi** — American/noir city midnight with taxi.
+- **Lost at Sea** — Maritime horizon and boat.
+- **Garden of Words** — Japanese rain garden.
+- **Aangan Ke Phool** — Indic courtyard and flowers.
+- **Khawab Ki Dakhili** — Indic dream, window rain, inked page.
+- **Shaam Samay** — Indic twilight garden with moon/sunflower mood.
+
+The generated scenes remain in `assets/art/` as reference material, but poem pages do not currently activate them. Every shelf volume opens in the shared book reader so the anthology has one calm reading experience. The Delhi bookstore scene remains the visual world of the homepage and bookshelf. Any future illustrated mode should be optional, rare, and reviewed in context rather than enabled poem by poem by default.
+
 ### Interactive Elements
 - **Hover effects**: Subtle color shifts on text
 - **Navigation**: Simple prev/next or return-to-home
