@@ -737,6 +737,34 @@
     .book-poem-content p { margin: 0; }
     .book-poem-content .divider { margin: 1.4rem 0; color: #b58758; }
 
+    .book-poem-content .ghazal-couplet {
+      position: relative;
+      margin: 0 0 2.1rem;
+      padding-bottom: 1.25rem;
+    }
+
+    .book-poem-content .ghazal-couplet::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(91,59,31,0.34), transparent);
+    }
+
+    .book-poem-content .ghazal-couplet:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .book-poem-content .ghazal-couplet:last-child::after { display: none; }
+    .book-poem-content .ghazal-couplet p + p { margin-top: 0.35rem; }
+    .book-poem-content .qafia { color: #8a5a38; font-weight: 600; }
+    .book-poem-content .prose-poem p,
+    .book-poem-content .nathar-nazm p { margin-bottom: 1.3em; }
+    .book-poem-content .waka-poem p { margin-bottom: 1.15em; }
+
     .book-folio {
       display: flex;
       justify-content: space-between;
