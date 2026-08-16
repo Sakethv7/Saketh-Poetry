@@ -54,8 +54,12 @@ python3 -m http.server 8000
 ### File Structure
 ```
 saketh-poetry/
-├── index.html               # Homepage — all poems with filter bar
-├── poems/                   # 69 individual poem HTML files
+├── index.html               # Homepage — bookshelf, filters, search, book reader
+├── poems/                   # 70 individual poem HTML files — source of truth
+├── poems.json               # Generated: poem text for the reader & search
+├── sitemap.xml              # Generated: every poem page
+├── tools/
+│   └── build-content.mjs    # Regenerates poems.json + sitemap.xml
 ├── css/
 │   └── style.css            # Global styles & typography
 ├── js/
@@ -67,6 +71,18 @@ saketh-poetry/
 ├── README.md
 └── CONCEPTS.md              # Design philosophy & architecture
 ```
+
+### After adding or editing a poem
+
+The poem pages are the source of truth. Regenerate what's derived from them:
+
+```bash
+node tools/build-content.mjs
+```
+
+This rewrites `poems.json` (what the homepage reader shows and search looks
+through) and `sitemap.xml`. Deployment runs `node tools/build-content.mjs --check`
+and fails if either file is out of date, so a forgotten rebuild can't ship.
 
 ---
 

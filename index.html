@@ -4,7 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wandering Poet — An Anthology</title>
-  <link rel="stylesheet" href="css/style.css?v=7">
+  <meta name="description" content="An anthology of 70 poems in English, Hindi and Urdu — free verse, ghazals, nazms and more, from the wandering poet Raahi.">
+  <link rel="canonical" href="https://sakethv7.github.io/Saketh-Poetry/">
+
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="Wandering Poet — An Anthology">
+  <meta property="og:title"       content="Wandering Poet — An Anthology">
+  <meta property="og:description" content="An anthology of 70 poems in English, Hindi and Urdu — free verse, ghazals, nazms and more.">
+  <meta property="og:url"         content="https://sakethv7.github.io/Saketh-Poetry/">
+  <meta property="og:image"       content="https://sakethv7.github.io/Saketh-Poetry/assets/art/delhi-poetry-bookstore.jpg">
+  <meta name="twitter:card"       content="summary_large_image">
+
+  <link rel="stylesheet" href="css/style.css?v=9">
   <style>
     body { background: #F4EEE2; }
 
@@ -545,9 +556,9 @@
       user-select: none;
     }
 
-    .poems-grid > .lang-divider.fhide,
-    .poems-grid > .form-divider.fhide,
-    .poems-grid > .poem-card.fhide {
+    .poems-grid > .lang-divider.is-hidden,
+    .poems-grid > .form-divider.is-hidden,
+    .poems-grid > .poem-card.is-hidden {
       display: none;
     }
 
@@ -567,9 +578,13 @@
     #poems {
       height: 100svh;
       min-height: 42rem;
+      /* The WebP is a third of the JPEG's weight. Listing both by type lets the
+         browser pick one — a plain url() fallback declaration underneath would
+         make every visitor download the JPEG as well. */
       background-image:
         linear-gradient(90deg, rgba(7,9,8,0.5), rgba(7,9,8,0.16) 28%, rgba(7,9,8,0.22) 72%, rgba(7,9,8,0.52)),
-        url('assets/art/delhi-poetry-bookstore.jpg');
+        image-set(url('assets/art/delhi-poetry-bookstore.webp') type('image/webp'),
+                  url('assets/art/delhi-poetry-bookstore.jpg') type('image/jpeg'));
       background-size: cover;
       background-position: center;
     }
@@ -644,6 +659,24 @@
       font: 1.4rem/1 var(--font-sans);
       cursor: pointer;
     }
+
+    .book-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.75rem;
+      height: 2.75rem;
+      border: 1px solid rgba(255,244,220,0.28);
+      border-radius: 50%;
+      color: #fff8e8;
+      background: rgba(15,12,9,0.76);
+      font: 1.5rem/1 var(--font-sans);
+      cursor: pointer;
+    }
+
+    .book-nav[hidden] { display: none; }
+    .book-nav--prev { left: 1.25rem; }
+    .book-nav--next { right: 1.25rem; }
 
     .open-book {
       position: relative;
@@ -790,6 +823,10 @@
       .library-header { position: relative; padding: 0.9rem; }
       .poems-grid { flex: 1; height: auto; min-height: 0; overflow-y: auto; }
       .book-reader { padding: 4.75rem 0.75rem 1rem; }
+      /* No room beside the page on a phone — sit the arrows next to the close button. */
+      .book-nav { top: 1.25rem; transform: none; }
+      .book-nav--prev { left: 1.25rem; }
+      .book-nav--next { right: 4.5rem; }
       .open-book { width: 100%; height: 82vh; grid-template-columns: 1fr; }
       .book-page--title { display: none; }
       .book-page--poem { border-radius: 5px; padding: 2.4rem 1.5rem; }
@@ -1252,94 +1289,10 @@
     </footer>
   </section>
 
-  <script src="js/poem-content.js"></script>
-  <script>
-    (function () {
-      const grid  = document.querySelector('.poems-grid');
-      const bar   = document.getElementById('filterBar');
-      const nodes = Array.from(grid.children);
-
-      // Dynamic poem count in nav
-      const total = nodes.filter(n => n.classList.contains('poem-card')).length;
-      const countEl = document.getElementById('poemCount');
-      if (countEl) countEl.textContent = total + ' poems';
-
-      // Walk the DOM once to tag every card with its lang + form
-      let lang = '', form = '';
-      nodes.forEach(n => {
-        if (n.classList.contains('lang-divider')) lang = n.querySelector('.lang-name').textContent.trim();
-        if (n.classList.contains('form-divider')) form = n.querySelector('.form-label').textContent.trim();
-        if (n.classList.contains('poem-card')) {
-          n.dataset.lang = lang;
-          n.dataset.form = form;
-        }
-      });
-
-      // Collect unique forms per language (preserving DOM order)
-      lang = '';
-      const langs = ['English', 'Hindi · Urdu'];
-      const formsPerLang = { 'English': [], 'Hindi · Urdu': [] };
-      nodes.forEach(n => {
-        if (n.classList.contains('lang-divider')) lang = n.querySelector('.lang-name').textContent.trim();
-        if (n.classList.contains('form-divider') && lang) {
-          const f = n.querySelector('.form-label').textContent.trim();
-          if (!formsPerLang[lang].includes(f)) formsPerLang[lang].push(f);
-        }
-      });
-
-      // Build filter buttons
-      function makeBtn(label, filterVal) {
-        const b = document.createElement('button');
-        b.className = 'filter-btn';
-        b.textContent = label;
-        b.dataset.filter = filterVal;
-        b.addEventListener('click', () => applyFilter(filterVal));
-        return b;
-      }
-
-      bar.appendChild(makeBtn('All', 'all')).classList.add('active');
-
-      langs.forEach((l, i) => {
-        if (i > 0) bar.appendChild(Object.assign(document.createElement('span'), { className: 'filter-sep', textContent: '—' }));
-        bar.appendChild(makeBtn(l, 'lang:' + l));
-        formsPerLang[l].forEach(f => bar.appendChild(makeBtn(f, 'form:' + f)));
-      });
-
-      function applyFilter(val) {
-        bar.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === val));
-
-        // First pass: determine which langs/forms have at least one visible card
-        const visibleLangs = new Set(), visibleForms = new Set();
-        nodes.forEach(n => {
-          if (!n.classList.contains('poem-card')) return;
-          let show = val === 'all'
-            || (val.startsWith('lang:') && n.dataset.lang === val.slice(5))
-            || (val.startsWith('form:') && n.dataset.form === val.slice(5));
-          if (show) { visibleLangs.add(n.dataset.lang); visibleForms.add(n.dataset.form); }
-        });
-
-        // Second pass: apply fhide class
-        nodes.forEach(n => {
-          if (n.classList.contains('filter-bar')) return;
-          if (n.classList.contains('lang-divider')) {
-            const l = n.querySelector('.lang-name').textContent.trim();
-            n.classList.toggle('fhide', !visibleLangs.has(l));
-          } else if (n.classList.contains('form-divider')) {
-            const f = n.querySelector('.form-label').textContent.trim();
-            n.classList.toggle('fhide', !visibleForms.has(f));
-          } else if (n.classList.contains('poem-card')) {
-            const show = val === 'all'
-              || (val.startsWith('lang:') && n.dataset.lang === val.slice(5))
-              || (val.startsWith('form:') && n.dataset.form === val.slice(5));
-            n.classList.toggle('fhide', !show);
-          }
-        });
-      }
-    })();
-  </script>
-
   <div class="book-reader" id="bookReader" role="dialog" aria-modal="true" aria-labelledby="bookTitle" hidden>
     <button class="book-reader__close" id="closeBook" type="button" aria-label="Close book">&times;</button>
+    <button class="book-nav book-nav--prev" id="prevPoem" type="button" aria-label="Previous poem">&lsaquo;</button>
+    <button class="book-nav book-nav--next" id="nextPoem" type="button" aria-label="Next poem">&rsaquo;</button>
     <article class="open-book">
       <section class="book-page book-page--title">
         <span class="book-chapter">From the shelf</span>
@@ -1356,6 +1309,14 @@
   </div>
 
   <script>
+    // poems.json is generated from poems/*.html by tools/build-content.mjs. It is
+    // fetched after first paint rather than shipped as a render-blocking script:
+    // until it lands the reader falls back to fetching the poem page itself, and
+    // search runs on titles and excerpts alone.
+    const POEM_CONTENT = fetch('poems.json')
+      .then(response => (response.ok ? response.json() : null))
+      .catch(() => null);
+
     (function () {
       // Build quote pool from visible poem cards so it stays in sync with poems.
       const pool = Array.from(document.querySelectorAll('.poem-card'))
@@ -1402,6 +1363,10 @@
       qEls[0].setAttribute('aria-hidden', 'false');
       sEls[0].setAttribute('aria-hidden', 'false');
 
+      // The CSS already stills the crossfade under reduced motion; without this
+      // the quotes would still swap every 4.5s, just instantly.
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
       setInterval(() => {
         qEls[i].classList.remove('on');
         sEls[i].classList.remove('on');
@@ -1415,74 +1380,139 @@
       }, 4500);
     })();
 
+    // ── the shelf ───────────────────────────────────────────────────────────
+    // Filters and search are two views of one question — which cards belong on
+    // screen — so a single state object answers it and one pass renders it.
     (function () {
+      const grid = document.querySelector('.poems-grid');
+      const bar = document.getElementById('filterBar');
       const input = document.getElementById('poemSearch');
       const meta = document.getElementById('searchMeta');
-      const poemCount = document.getElementById('poemCount');
       const poemsSection = document.getElementById('poems');
-      const grid = document.querySelector('.poems-grid');
-      const cards = Array.from(document.querySelectorAll('.poem-card'));
-      if (!input || !meta || !grid || !cards.length) return;
+      if (!grid || !bar) return;
 
-      if (poemCount) {
-        poemCount.textContent = `${cards.length} poems`;
-      }
+      const nodes = Array.from(grid.children);
+      const cards = nodes.filter(node => node.classList.contains('poem-card'));
+      if (!cards.length) return;
 
-      let currentLanguage = '';
-      Array.from(grid.children).forEach(node => {
-        if (node.classList?.contains('lang-divider')) {
-          currentLanguage = node.textContent.trim();
-        }
+      const countEl = document.getElementById('poemCount');
+      if (countEl) countEl.textContent = `${cards.length} poems`;
 
-        if (node.classList?.contains('poem-card')) {
-          node.dataset.searchText = `${currentLanguage} ${node.textContent}`.toLowerCase();
+      // Walk the shelf once: tag every card with its language and form, and
+      // collect the forms each language actually has.
+      const formsPerLang = new Map();
+      let lang = '', form = '';
+      nodes.forEach(node => {
+        if (node.classList.contains('lang-divider')) {
+          lang = node.querySelector('.lang-name').textContent.trim();
+          form = '';
+          if (!formsPerLang.has(lang)) formsPerLang.set(lang, []);
+        } else if (node.classList.contains('form-divider')) {
+          form = node.querySelector('.form-label').textContent.trim();
+          const forms = formsPerLang.get(lang);
+          if (forms && !forms.includes(form)) forms.push(form);
+        } else if (node.classList.contains('poem-card')) {
+          node.dataset.lang = lang;
+          node.dataset.form = form;
+          node.dataset.searchText = `${lang} ${node.textContent}`.toLowerCase();
         }
       });
 
-      const setDividerVisibility = query => {
-        Array.from(grid.children).forEach(node => {
-          if (!node.classList?.contains('lang-divider') && !node.classList?.contains('form-divider')) return;
+      const state = { filter: 'all', query: '' };
+      const sectionKey = (language, formLabel) => `${language} ${formLabel}`;
 
-          const stopClass = node.classList.contains('lang-divider') ? 'lang-divider' : 'form-divider';
-          let hasVisiblePoem = false;
-          let next = node.nextElementSibling;
-          while (next && !next.classList.contains(stopClass)) {
-            if (node.classList.contains('form-divider') && next.classList.contains('lang-divider')) break;
-            if (next.classList.contains('poem-card') && !next.hidden) {
-              hasVisiblePoem = true;
-              break;
-            }
-            next = next.nextElementSibling;
-          }
+      const matchesFilter = card =>
+        state.filter === 'all'
+        || (state.filter.startsWith('lang:') && card.dataset.lang === state.filter.slice(5))
+        || (state.filter.startsWith('form:') && card.dataset.form === state.filter.slice(5));
 
-          node.hidden = !hasVisiblePoem;
-        });
-      };
+      const matchesQuery = card =>
+        !state.query
+        || card.dataset.searchText.includes(state.query)
+        || (card.dataset.fullText || '').includes(state.query);
 
-      const updateSearch = () => {
-        const query = input.value.trim().toLowerCase();
-        let visibleCount = 0;
+      function render() {
+        const langsShown = new Set(), formsShown = new Set();
+        let visible = 0;
 
         cards.forEach(card => {
-          const visible = !query || card.dataset.searchText.includes(query);
-          card.hidden = !visible;
-          if (visible) visibleCount += 1;
+          const show = matchesFilter(card) && matchesQuery(card);
+          card.classList.toggle('is-hidden', !show);
+          if (show) {
+            visible += 1;
+            langsShown.add(card.dataset.lang);
+            formsShown.add(sectionKey(card.dataset.lang, card.dataset.form));
+          }
         });
 
-        setDividerVisibility(query);
-        poemsSection.classList.toggle('is-searching', Boolean(query));
-        meta.textContent = query
-          ? `${visibleCount} poem${visibleCount === 1 ? '' : 's'} found`
+        // A divider earns its place only if a card under it survived both tests.
+        let dividerLang = '';
+        nodes.forEach(node => {
+          if (node.classList.contains('lang-divider')) {
+            dividerLang = node.querySelector('.lang-name').textContent.trim();
+            node.classList.toggle('is-hidden', !langsShown.has(dividerLang));
+          } else if (node.classList.contains('form-divider')) {
+            const label = node.querySelector('.form-label').textContent.trim();
+            node.classList.toggle('is-hidden', !formsShown.has(sectionKey(dividerLang, label)));
+          }
+        });
+
+        bar.querySelectorAll('.filter-btn').forEach(btn =>
+          btn.classList.toggle('active', btn.dataset.filter === state.filter));
+        poemsSection.classList.toggle('is-searching', Boolean(state.query));
+        meta.textContent = state.query || state.filter !== 'all'
+          ? `${visible} poem${visible === 1 ? '' : 's'} found`
           : `${cards.length} poems on the shelf`;
+      }
+
+      const makeBtn = (label, value) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'filter-btn';
+        btn.textContent = label;
+        btn.dataset.filter = value;
+        btn.addEventListener('click', () => { state.filter = value; render(); });
+        return btn;
       };
 
-      input.addEventListener('input', updateSearch);
-      updateSearch();
+      bar.appendChild(makeBtn('All', 'all'));
+      let firstLang = true;
+      formsPerLang.forEach((forms, language) => {
+        if (!firstLang) {
+          bar.appendChild(Object.assign(document.createElement('span'),
+            { className: 'filter-sep', textContent: '—' }));
+        }
+        firstLang = false;
+        bar.appendChild(makeBtn(language, 'lang:' + language));
+        forms.forEach(f => bar.appendChild(makeBtn(f, 'form:' + f)));
+      });
+
+      if (input) {
+        input.addEventListener('input', () => {
+          state.query = input.value.trim().toLowerCase();
+          render();
+        });
+      }
+
+      // The placeholder promises to search a line, not just a title — so widen
+      // the index to the whole poem once poems.json arrives.
+      POEM_CONTENT.then(content => {
+        if (!content) return;
+        cards.forEach(card => {
+          const entry = content[card.getAttribute('href')];
+          if (entry?.text) card.dataset.fullText = entry.text.toLowerCase();
+        });
+        if (state.query) render();
+      });
+
+      render();
     })();
 
     (function () {
       const reader = document.getElementById('bookReader');
       const closeButton = document.getElementById('closeBook');
+      const prevButton = document.getElementById('prevPoem');
+      const nextButton = document.getElementById('nextPoem');
       const title = document.getElementById('bookTitle');
       const subtitle = document.getElementById('bookSubtitle');
       const form = document.getElementById('bookForm');
@@ -1491,11 +1521,18 @@
       const pageLink = document.getElementById('openPoemPage');
       const pageShell = poem.closest('.book-page');
       const pageContent = document.querySelectorAll('body > .opening, body > #poems');
+      const cards = Array.from(document.querySelectorAll('.poem-card'));
       let returnFocus = null;
       let activeRequest = null;
+      let pushedState = false;
+      let shelf = cards;      // the run of poems the arrows walk
+      let current = null;
       // Artwork remains curated reference material; every shelf volume opens
       // in the shared book reader until an illustrated mode is reintroduced.
       const illustratedPoems = new Set();
+
+      const slugOf = card => card.getAttribute('href').replace(/^poems\/|\.html$/g, '');
+      const cardForSlug = slug => cards.find(card => slugOf(card) === slug) || null;
 
       const renderPoem = entry => {
         title.textContent = entry.title || title.textContent;
@@ -1507,18 +1544,113 @@
         pageShell.scrollTop = 0;
       };
 
-      const closeBook = () => {
+      const step = delta => {
+        const at = shelf.indexOf(current);
+        return at === -1 ? null : shelf[at + delta] || null;
+      };
+
+      const openBook = async (card, { push = true } = {}) => {
+        const href = card.getAttribute('href');
+        activeRequest?.abort();
+        activeRequest = new AbortController();
+        const request = activeRequest;
+
+        // Arrows walk whatever the shelf is showing, so a filtered or searched
+        // shelf reads as its own small collection.
+        if (reader.hidden) {
+          const showing = cards.filter(c => !c.classList.contains('is-hidden'));
+          shelf = showing.includes(card) ? showing : cards;
+          returnFocus = card;
+        }
+        current = card;
+
+        title.textContent = card.querySelector('h2')?.textContent || 'Untitled';
+        mobileTitle.textContent = title.textContent;
+        subtitle.textContent = 'Opening this volume...';
+        form.textContent = card.querySelector('.poem-category')?.textContent || 'Poem';
+        poem.innerHTML = '<p>Turning the pages...</p>';
+        pageLink.href = href;
+        prevButton.hidden = !step(-1);
+        nextButton.hidden = !step(1);
+
+        if (reader.hidden) {
+          reader.hidden = false;
+          document.body.style.overflow = 'hidden';
+          pageContent.forEach(node => node.setAttribute('inert', ''));
+          closeButton.focus();
+        }
+
+        const url = `${location.pathname}?poem=${encodeURIComponent(slugOf(card))}`;
+        if (push) {
+          history.pushState({ poem: slugOf(card) }, '', url);
+          pushedState = true;
+        } else {
+          // Page-turns replace rather than push, so Back always means "leave the
+          // reader" instead of walking every poem you turned through.
+          history.replaceState({ poem: slugOf(card) }, '', url);
+        }
+
+        const content = await POEM_CONTENT;
+        if (request.signal.aborted) return;
+        const bundled = content?.[href];
+        if (bundled) {
+          renderPoem(bundled);
+          if (activeRequest === request) activeRequest = null;
+          return;
+        }
+
+        try {
+          const response = await fetch(href, { signal: request.signal });
+          if (!response.ok) throw new Error(`Could not open ${href}`);
+          const page = new DOMParser().parseFromString(await response.text(), 'text/html');
+          const pageTitle = page.querySelector('.poem-metadata h1');
+          const pageSubtitle = page.querySelector('.poem-subtitle');
+          const pageForm = page.querySelector('.poem-metadata .poem-category');
+          const pagePoem = page.querySelector('.poem-text');
+
+          renderPoem({
+            title: pageTitle?.textContent?.trim(),
+            subtitle: pageSubtitle?.textContent?.trim() || card.querySelector('p')?.textContent,
+            form: pageForm?.textContent?.trim(),
+            html: pagePoem?.innerHTML,
+            lang: page.documentElement.lang
+          });
+        } catch (error) {
+          if (error.name === 'AbortError') return;
+          subtitle.textContent = card.querySelector('p')?.textContent || '';
+          poem.innerHTML = '<p>This volume could not be read here. Open the poem page to continue reading.</p>';
+        } finally {
+          if (activeRequest === request) activeRequest = null;
+        }
+      };
+
+      const closeBook = ({ fromHistory = false } = {}) => {
+        if (reader.hidden) return;
         activeRequest?.abort();
         activeRequest = null;
         reader.hidden = true;
+        current = null;
         document.body.style.overflow = '';
         pageContent.forEach(node => node.removeAttribute('inert'));
         returnFocus?.focus();
+
+        if (!fromHistory) {
+          // Rewind our own entry when we made one; a deep link has no entry to
+          // rewind, so just drop the query.
+          if (pushedState) history.back();
+          else history.replaceState({}, '', location.pathname);
+        }
+        pushedState = false;
+      };
+
+      const turnPage = delta => {
+        const target = step(delta);
+        if (target) openBook(target, { push: false });
       };
 
       const trapFocus = event => {
         if (event.key !== 'Tab' || reader.hidden) return;
-        const controls = [closeButton, pageLink].filter(control => !control.hidden);
+        const controls = [prevButton, closeButton, nextButton, pageLink].filter(c => !c.hidden);
         const first = controls[0];
         const last = controls[controls.length - 1];
         if (event.shiftKey && document.activeElement === first) {
@@ -1530,71 +1662,47 @@
         }
       };
 
-      document.querySelectorAll('.poem-card').forEach(card => {
-        const href = card.getAttribute('href');
-        if (illustratedPoems.has(href)) {
+      cards.forEach(card => {
+        if (illustratedPoems.has(card.getAttribute('href'))) {
           card.dataset.illustrated = 'true';
           return;
         }
 
-        card.addEventListener('click', async event => {
+        card.addEventListener('click', event => {
+          // Leave cmd/ctrl/shift-click and middle-click to the browser — these
+          // are links, and people expect to open poems in a new tab.
+          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
           event.preventDefault();
-          activeRequest?.abort();
-          activeRequest = new AbortController();
-          const request = activeRequest;
-          returnFocus = card;
-          title.textContent = card.querySelector('h2')?.textContent || 'Untitled';
-          mobileTitle.textContent = title.textContent;
-          subtitle.textContent = 'Opening this volume...';
-          form.textContent = card.querySelector('.poem-category')?.textContent || 'Poem';
-          poem.innerHTML = '<p>Turning the pages...</p>';
-          pageLink.href = href;
-          reader.hidden = false;
-          document.body.style.overflow = 'hidden';
-          pageContent.forEach(node => node.setAttribute('inert', ''));
-          closeButton.focus();
-
-          const bundledPoem = window.POEM_CONTENT?.[href];
-          if (bundledPoem) {
-            renderPoem(bundledPoem);
-            activeRequest = null;
-            return;
-          }
-
-          try {
-            const response = await fetch(href, { signal: request.signal });
-            if (!response.ok) throw new Error(`Could not open ${href}`);
-            const page = new DOMParser().parseFromString(await response.text(), 'text/html');
-            const pageTitle = page.querySelector('.poem-metadata h1');
-            const pageSubtitle = page.querySelector('.poem-subtitle');
-            const pageForm = page.querySelector('.poem-metadata .poem-category');
-            const pagePoem = page.querySelector('.poem-text');
-
-            renderPoem({
-              title: pageTitle?.textContent?.trim(),
-              subtitle: pageSubtitle?.textContent?.trim() || card.querySelector('p')?.textContent,
-              form: pageForm?.textContent?.trim(),
-              html: pagePoem?.innerHTML,
-              lang: page.documentElement.lang
-            });
-          } catch (error) {
-            if (error.name === 'AbortError') return;
-            subtitle.textContent = card.querySelector('p')?.textContent || '';
-            poem.innerHTML = '<p>This volume could not be read here. Open the poem page to continue reading.</p>';
-          } finally {
-            if (activeRequest === request) activeRequest = null;
-          }
+          openBook(card);
         });
       });
 
-      closeButton.addEventListener('click', closeBook);
+      closeButton.addEventListener('click', () => closeBook());
+      prevButton.addEventListener('click', () => turnPage(-1));
+      nextButton.addEventListener('click', () => turnPage(1));
       reader.addEventListener('click', event => {
         if (event.target === reader) closeBook();
       });
+
       document.addEventListener('keydown', event => {
-        if (event.key === 'Escape' && !reader.hidden) closeBook();
+        if (reader.hidden) return;
+        if (event.key === 'Escape') closeBook();
+        else if (event.key === 'ArrowLeft') turnPage(-1);
+        else if (event.key === 'ArrowRight') turnPage(1);
         trapFocus(event);
       });
+
+      // Deep links: ?poem=slug opens that volume, and Back/Forward move through
+      // the reader the way they move through pages.
+      const openFromUrl = ({ initial = false } = {}) => {
+        const slug = new URLSearchParams(location.search).get('poem');
+        const card = slug ? cardForSlug(slug) : null;
+        if (card) openBook(card, { push: false });
+        else if (!initial) closeBook({ fromHistory: true });
+      };
+
+      window.addEventListener('popstate', () => openFromUrl());
+      openFromUrl({ initial: true });
     })();
   </script>
 
