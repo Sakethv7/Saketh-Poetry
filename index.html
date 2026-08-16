@@ -1224,6 +1224,7 @@
     </footer>
   </section>
 
+  <script src="js/poem-content.js"></script>
   <script>
     (function () {
       const grid  = document.querySelector('.poems-grid');
@@ -1468,6 +1469,16 @@
       // in the shared book reader until an illustrated mode is reintroduced.
       const illustratedPoems = new Set();
 
+      const renderPoem = entry => {
+        title.textContent = entry.title || title.textContent;
+        mobileTitle.textContent = title.textContent;
+        subtitle.textContent = entry.subtitle || subtitle.textContent || '';
+        form.textContent = entry.form || form.textContent;
+        poem.innerHTML = entry.html || '<p>This volume could not be read here.</p>';
+        poem.lang = entry.lang || 'en';
+        pageShell.scrollTop = 0;
+      };
+
       const closeBook = () => {
         activeRequest?.abort();
         activeRequest = null;
@@ -1515,6 +1526,13 @@
           pageContent.forEach(node => node.setAttribute('inert', ''));
           closeButton.focus();
 
+          const bundledPoem = window.POEM_CONTENT?.[href];
+          if (bundledPoem) {
+            renderPoem(bundledPoem);
+            activeRequest = null;
+            return;
+          }
+
           try {
             const response = await fetch(href, { signal: request.signal });
             if (!response.ok) throw new Error(`Could not open ${href}`);
@@ -1524,17 +1542,17 @@
             const pageForm = page.querySelector('.poem-metadata .poem-category');
             const pagePoem = page.querySelector('.poem-text');
 
-            title.textContent = pageTitle?.textContent?.trim() || title.textContent;
-            mobileTitle.textContent = title.textContent;
-            subtitle.textContent = pageSubtitle?.textContent?.trim() || card.querySelector('p')?.textContent || '';
-            form.textContent = pageForm?.textContent?.trim() || form.textContent;
-            poem.innerHTML = pagePoem?.innerHTML || '<p>This volume could not be read here.</p>';
-            poem.lang = page.documentElement.lang || 'en';
-            pageShell.scrollTop = 0;
+            renderPoem({
+              title: pageTitle?.textContent?.trim(),
+              subtitle: pageSubtitle?.textContent?.trim() || card.querySelector('p')?.textContent,
+              form: pageForm?.textContent?.trim(),
+              html: pagePoem?.innerHTML,
+              lang: page.documentElement.lang
+            });
           } catch (error) {
             if (error.name === 'AbortError') return;
             subtitle.textContent = card.querySelector('p')?.textContent || '';
-            poem.innerHTML = '<p>This volume is available on its own page.</p>';
+            poem.innerHTML = '<p>This volume could not be read here. Open the poem page to continue reading.</p>';
           } finally {
             if (activeRequest === request) activeRequest = null;
           }
