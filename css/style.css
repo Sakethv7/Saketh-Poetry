@@ -196,7 +196,9 @@ body[data-art="anthology-home"] .opening {
   background:
     linear-gradient(180deg, rgba(4,7,8,0.24) 0%, rgba(5,7,7,0.4) 62%, rgba(7,6,5,0.68) 100%),
     linear-gradient(90deg, rgba(4,7,8,0.34), transparent 24%, transparent 74%, rgba(5,7,7,0.35)),
-    url("../assets/art/delhi-poetry-bookstore.jpg") center / cover no-repeat;
+    image-set(url("../assets/art/delhi-poetry-bookstore.webp") type("image/webp"),
+              url("../assets/art/delhi-poetry-bookstore.jpg") type("image/jpeg"))
+      center / cover no-repeat;
 }
 
 body[data-art="anthology-home"] .top-nav,
