@@ -470,7 +470,9 @@
       position: relative;
       z-index: 1;
       display: -webkit-box;
-      -webkit-line-clamp: 5;
+      /* Five lines overran the card whenever the title wrapped, slicing the
+         last line in half rather than ending on an ellipsis. */
+      -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
       overflow: hidden;
       font-size: 0.86rem;
@@ -499,18 +501,22 @@
       .poems-grid {
         grid-column: auto;
         grid-row: auto;
-        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+        /* 145px missed a two-up fit at 375px by a few pixels and dropped the
+           shelf to a single file of poems. */
+        grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
         padding: 1rem;
         gap: 1rem 0.75rem;
       }
 
       #poems .poem-card {
-        min-height: 13.5rem;
+        /* Two-up cards are narrow, so titles run to three lines — the old
+           13.5rem sliced the excerpt in half on most cards. */
+        min-height: 15.5rem;
         padding: 1.05rem 0.9rem 1rem 1rem;
       }
 
       #poems .poem-card p {
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 3;
       }
     }
 
@@ -811,6 +817,27 @@
       to { opacity: 1; transform: perspective(1200px) rotateX(0) scale(1); }
     }
 
+    /* Wrapped, the fourteen filters stacked seven rows deep in a narrow shelf —
+       half the screen before a single poem showed. One swipeable row keeps them
+       all reachable. Tablets are as cramped here as phones, hence 1000px. */
+    @media (max-width: 1000px) {
+      .filter-bar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        /* A scroll container's automatic minimum size is zero, which collapses
+           the grid row it sits in — the buttons would vanish without this. */
+        min-height: min-content;
+        scrollbar-width: none;
+        margin-bottom: 1.25rem;
+        /* Fade the trailing edge so the row reads as swipeable rather than as a
+           filter chopped in half. */
+        mask-image: linear-gradient(to right, #000 88%, transparent);
+      }
+
+      .filter-bar::-webkit-scrollbar { display: none; }
+      .filter-btn { flex: 0 0 auto; }
+    }
+
     @media (max-width: 760px) {
       #poems { min-height: 100svh; }
       .poems-inner {
@@ -822,6 +849,15 @@
       }
       .library-header { position: relative; padding: 0.9rem; }
       .poems-grid { flex: 1; height: auto; min-height: 0; overflow-y: auto; }
+
+      /* Inherited from the desktop sidebar grid, align-items:start left the
+         header narrower than the shelf below it. */
+      .poems-inner { align-items: stretch; }
+
+      /* Desktop's generous divider margins cost half the shelf window on a
+         phone — the first card sat 209px down a 447px opening. */
+      .lang-divider { margin-top: 1.35rem; }
+      .form-divider { margin-top: 0.5rem; }
       .book-reader { padding: 4.75rem 0.75rem 1rem; }
       /* No room beside the page on a phone — sit the arrows next to the close button. */
       .book-nav { top: 1.25rem; transform: none; }
@@ -1419,7 +1455,7 @@
       });
 
       const state = { filter: 'all', query: '' };
-      const sectionKey = (language, formLabel) => `${language} ${formLabel}`;
+      const sectionKey = (language, formLabel) => `${language}||${formLabel}`;
 
       const matchesFilter = card =>
         state.filter === 'all'
