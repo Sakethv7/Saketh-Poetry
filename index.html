@@ -51,6 +51,10 @@
       position: relative;
       z-index: 10;
       display: flex;
+      /* css/style.css stacks every <nav> below 768px for the poem pages, and
+         this masthead is a <nav>. Stated here rather than in a media query so
+         there is no width at which the bare rule wins by default. */
+      flex-direction: row;
       justify-content: space-between;
       align-items: center;
       padding: clamp(1.4rem, 3vw, 2rem) clamp(2rem, 7vw, 5rem);
@@ -323,7 +327,6 @@
     }
 
     .poems-grid {
-      grid-column: 2;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 1.35rem 1rem;
@@ -513,23 +516,7 @@
     }
 
     @media (max-width: 760px) {
-      .poems-inner {
-        display: block;
-        padding-top: 3.5rem;
-      }
-
-      .library-header {
-        position: static;
-        margin-bottom: 0.75rem;
-      }
-
-      .search-meta {
-        margin: -0.65rem 0 1.25rem;
-      }
-
       .poems-grid {
-        grid-column: auto;
-        grid-row: auto;
         /* 145px missed a two-up fit at 375px by a few pixels and dropped the
            shelf to a single file of poems. */
         grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
@@ -591,9 +578,13 @@
       user-select: none;
     }
 
-    .poems-grid > .lang-divider.is-hidden,
-    .poems-grid > .form-divider.is-hidden,
-    .poems-grid > .poem-card.is-hidden {
+    /* Scoped through #poems, not .poems-grid: `#poems .poem-card` sets
+       display:flex for the card's column layout, and one id outranks any number
+       of classes — so the old three-class selector lost, and filtered-out
+       volumes stayed on the shelf while the count claimed they had gone. */
+    #poems .lang-divider.is-hidden,
+    #poems .form-divider.is-hidden,
+    #poems .poem-card.is-hidden {
       display: none;
     }
 
@@ -609,14 +600,40 @@
       color: rgba(90,68,38,0.4);
     }
 
-    /* Full-page illustrated library */
+    /* Full-page illustrated library.
+       The shelf used to be a 100svh panel with the volumes scrolling inside it.
+       That framed the bookcase nicely on a laptop but showed 4% of it on a
+       phone, inside a scroller nested in a page that also scrolled. The section
+       now grows to its contents and the page's own scrollbar does the work. */
     #poems {
+      min-height: 100svh;
+      /* Not `hidden`: an overflow:hidden ancestor becomes the scrollport that
+         sticky children resolve against, and since it never scrolls, both the
+         backdrop and the header would quietly stop sticking. `clip` does the
+         same visual job without creating a scroll container. */
+      overflow: clip;
+      background: #140C06;
+    }
+
+    /* The photograph and its scrim, pinned to the viewport for as long as the
+       section is on screen. Sticky rather than fixed so it releases itself at
+       the section's edges — no scroll listener, no observer. */
+    .library-backdrop {
+      position: sticky;
+      top: 0;
+      z-index: -3;
+      height: 100vh;
       height: 100svh;
-      min-height: 42rem;
+      /* Pulls the backdrop back out of flow so the shelf overlays it rather
+         than starting a screen below it. */
+      margin-bottom: -100vh;
+      margin-bottom: -100svh;
+      pointer-events: none;
       /* The WebP is a third of the JPEG's weight. Listing both by type lets the
          browser pick one — a plain url() fallback declaration underneath would
          make every visitor download the JPEG as well. */
       background-image:
+        linear-gradient(180deg, rgba(7,8,7,0.25), rgba(9,7,5,0.66)),
         linear-gradient(90deg, rgba(7,9,8,0.5), rgba(7,9,8,0.16) 28%, rgba(7,9,8,0.22) 72%, rgba(7,9,8,0.52)),
         image-set(url('assets/art/delhi-poetry-bookstore.webp') type('image/webp'),
                   url('assets/art/delhi-poetry-bookstore.jpg') type('image/jpeg'));
@@ -624,10 +641,10 @@
       background-position: center;
     }
 
-    #poems::before {
-      background: linear-gradient(180deg, rgba(7,8,7,0.25), rgba(9,7,5,0.66));
-      opacity: 1;
-    }
+    /* Its vertical gradient was tuned against a one-screen section; over
+       seventy volumes it would wash the photograph out entirely. The scrim it
+       painted now rides on .library-backdrop instead. */
+    #poems::before { display: none; }
 
     #poems::after {
       background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,244,220,0.018) 3px 4px);
@@ -635,25 +652,48 @@
     }
 
     .poems-inner {
-      height: calc(100svh - 3.2rem);
-      min-height: 38.8rem;
-      padding-top: clamp(1.5rem, 4vh, 3rem);
-      padding-bottom: 1.25rem;
+      display: block;
+      max-width: 1540px;
+      padding-top: clamp(1.5rem, 4vh, 2.5rem);
+      padding-bottom: clamp(2.5rem, 5vw, 4rem);
     }
 
+    /* A band across the top of the shelf rather than a column beside it, so the
+       bookcase gets the full width. Pinned, because the shelf below it is some
+       nine thousand pixels long and the filters are how you avoid reading all
+       of it. */
     .library-header {
+      position: sticky;
       top: 0;
-      padding: 1.25rem;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(14rem, 22rem);
+      grid-template-areas:
+        "title   search"
+        "filters meta";
+      gap: 0.9rem clamp(1.5rem, 4vw, 3rem);
+      align-items: end;
+      margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+      padding: 1.1rem clamp(1rem, 2vw, 1.5rem);
       border-left: 2px solid rgba(223,157,73,0.64);
-      background: rgba(10,12,10,0.62);
+      /* Denser than the 0.62 it carried as a sidebar: pinned, it now has lit
+         card spines sliding under it rather than a dim photograph. */
+      background: rgba(10,12,10,0.88);
       backdrop-filter: blur(7px);
       box-shadow: 0 22px 60px rgba(0,0,0,0.28);
     }
 
+    .library-title  { grid-area: title; }
+    .poem-search    { grid-area: search; }
+    /* The -0.95rem lift was tuned to the sidebar's 1.6rem stack gap; in the
+       band it pulls the count up into the search field. */
+    .search-meta    { grid-area: meta; text-align: right; margin: 0; }
+    .library-header .filter-bar { grid-area: filters; margin-bottom: 0; }
+
     .poems-grid {
-      height: 100%;
-      overflow-y: auto;
-      overscroll-behavior: contain;
+      /* Was a scroll container; now ordinary document flow. layoutPlanks()
+         measures offsetTop against this box either way, so the planks keep
+         their register without a script change. */
       scrollbar-color: rgba(221,158,77,0.58) rgba(20,12,7,0.35);
       /* The planks used to be a fixed 18.25rem background rhythm while card rows
          are 17.15rem and section headings shift everything again — so they drifted
@@ -665,8 +705,7 @@
     }
 
     .site-footer {
-      height: 3.2rem;
-      padding: 1.05rem 2rem;
+      padding: 1.4rem 2rem;
       color: rgba(245,226,193,0.58);
       background: rgba(8,7,6,0.88);
     }
@@ -871,20 +910,24 @@
     }
 
     @media (max-width: 760px) {
-      #poems { min-height: 100svh; }
-      .poems-inner {
-        height: calc(100svh - 3.2rem);
-        min-height: 0;
-        display: flex;
-        flex-direction: column;
-        padding-top: 1rem;
-      }
-      .library-header { position: relative; padding: 0.9rem; }
-      .poems-grid { flex: 1; height: auto; min-height: 0; overflow-y: auto; }
+      .poems-inner { padding-top: 1rem; }
 
-      /* Inherited from the desktop sidebar grid, align-items:start left the
-         header narrower than the shelf below it. */
-      .poems-inner { align-items: stretch; }
+      /* The header band has no room for two columns here, so it stacks. This
+         has to sit after the desktop .library-header rule, not with the other
+         shelf overrides above it — same specificity, so source order decides. */
+      .library-header {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "title"
+          "search"
+          "meta"
+          "filters";
+        gap: 0.55rem;
+        padding: 0.9rem;
+      }
+
+      .library-header h2 { font-size: 1.75rem; }
+      .search-meta { text-align: left; }
 
       /* Desktop's generous divider margins cost half the shelf window on a
          phone — the first card sat 209px down a 447px opening. */
@@ -948,9 +991,14 @@
 
   <!-- ════ POEMS ════ -->
   <section id="poems">
+    <!-- The library photograph. It lives on its own sticky element rather than
+         on #poems, because #poems is now as tall as seventy volumes and
+         background-size:cover would magnify the shot to fill it. -->
+    <div class="library-backdrop" aria-hidden="true"></div>
+
     <div class="poems-inner">
       <div class="library-header">
-        <div>
+        <div class="library-title">
           <span class="library-kicker">The bookcase</span>
           <h2>Poems as volumes</h2>
         </div>
@@ -961,12 +1009,14 @@
         </label>
 
         <div class="search-meta" id="searchMeta" aria-live="polite">Poems on the shelf</div>
+
+        <!-- Filter bar (populated by JS). It sits in the header rather than on
+             the shelf so it stays pinned — filtering is how you avoid scrolling
+             the whole bookcase, so it has to be reachable from anywhere in it. -->
+        <div class="filter-bar" id="filterBar"></div>
       </div>
 
       <div class="poems-grid">
-
-        <!-- Filter bar (populated by JS) -->
-        <div class="filter-bar" id="filterBar"></div>
 
         <!-- English -->
         <div class="lang-divider"><span class="lang-name">English</span></div>
@@ -1488,6 +1538,22 @@
 
       const state = { filter: 'all', query: '' };
       const sectionKey = (language, formLabel) => `${language}||${formLabel}`;
+      const header = document.querySelector('.library-header');
+      let lastVisible = null;
+
+      // The shelf flows down the page, so filtering seventy volumes down to six
+      // shortens the document by thousands of pixels and the browser clamps the
+      // scroll to the new maximum — landing a reader who was deep in the
+      // bookcase on the footer rather than on what they just asked for. Only
+      // acts when the top of the shelf has actually gone past the header.
+      function keepShelfInView() {
+        const headerHeight = header ? header.offsetHeight : 0;
+        const top = grid.getBoundingClientRect().top;
+        if (top >= headerHeight) return;
+        // `auto`, not `smooth`: html{scroll-behavior:smooth} would animate the
+        // entire nine thousand pixels.
+        window.scrollTo({ top: window.scrollY + top - headerHeight - 8, behavior: 'auto' });
+      }
 
       const matchesFilter = card =>
         state.filter === 'all'
@@ -1533,6 +1599,9 @@
           : `${cards.length} poems on the shelf`;
 
         layoutPlanks();
+
+        if (lastVisible !== null && visible !== lastVisible) keepShelfInView();
+        lastVisible = visible;
       }
 
       // Lay a plank under each row of volumes. The rows move whenever the shelf
