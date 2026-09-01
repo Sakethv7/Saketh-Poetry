@@ -12,10 +12,11 @@
   <meta property="og:title"       content="Wandering Poet — An Anthology">
   <meta property="og:description" content="An anthology of 70 poems in English, Hindi and Urdu — free verse, ghazals, nazms and more.">
   <meta property="og:url"         content="https://sakethv7.github.io/Saketh-Poetry/">
-  <meta property="og:image"       content="https://sakethv7.github.io/Saketh-Poetry/assets/art/delhi-poetry-bookstore.jpg">
+  <meta property="og:image"       content="https://sakethv7.github.io/Saketh-Poetry/assets/art/wandering-poet-indic-home-v1.webp">
   <meta name="twitter:card"       content="summary_large_image">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
-  <link rel="stylesheet" href="css/style.css?v=10">
+  <link rel="stylesheet" href="css/style.css?v=11">
   <style>
     body { background: #F4EEE2; }
 
@@ -1702,7 +1703,16 @@
       let current = null;
       // Artwork remains curated reference material; every shelf volume opens
       // in the shared book reader until an illustrated mode is reintroduced.
-      const illustratedPoems = new Set();
+      const illustratedPoems = new Set([
+        'poems/the-green-umbrella.html',
+        'poems/the-wardens-garden.html',
+        'poems/the-woman-who-brought-spring.html',
+        'poems/khaali-gali.html',
+        'poems/aangan-ke-phool.html',
+        'poems/hairpin.html',
+        'poems/jhuti-tasalli.html',
+        'poems/a-wandering-taxi.html'
+      ]);
 
       const slugOf = card => card.getAttribute('href').replace(/^poems\/|\.html$/g, '');
       const cardForSlug = slug => cards.find(card => slugOf(card) === slug) || null;

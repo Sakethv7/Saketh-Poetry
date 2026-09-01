@@ -179,3 +179,61 @@ change is called done, all at 375×812 unless noted.
     query and must be invisible above it.
 11. **Hero.** At 375px the nav is one row and the gap between nav and
     "FROM THE COLLECTION" is materially under the current 184px.
+
+## Homepage identity lifecycle — proposed
+
+This flow is separate from the shelf flow above. It runs only when the homepage
+opening is present and must finish before the reader reaches the existing shelf.
+
+```text
+document parses
+  |
+  +-- semantic nav/title/quotation render normally
+  |
+  +-- motion preference is read
+        |
+        +-- reduce ---------------------------------------+
+        |                                                 |
+        |   render deterministic settled frame            |
+        |   no entrance loop                               |
+        |                                                 v
+        +-- no-preference -> initialize p5.brush canvas -> settled
+                                 |                           frame
+                                 +-- 0.0s blank paper
+                                 +-- 0.3–2.4s scene strokes
+                                 +-- 1.8–4.2s title/quote emerge
+                                 +-- 4.0–6.0s washes settle
+                                 +-- noLoop()
+                                                             |
+reader scrolls ------------------------------------------------+
+  |
+  +-- existing #poems shelf
+  +-- existing card/filter/search behavior
+  +-- existing #bookReader behavior
+```
+
+### State model
+
+`uninitialized -> drawing -> settling -> settled` is the only animated path.
+Reduced motion takes `uninitialized -> settled`. Dependency failure takes
+`uninitialized -> fallback`, where the existing CSS paper and semantic content
+remain. No state transition targets `#poems`, `#bookReader`, or an individual
+poem page.
+
+### Event rules
+
+- Page load may start the scene once; scrolling away and back does not replay it.
+- The title and quotation remain available before canvas initialization.
+- Resize after settlement redraws only the final deterministic composition.
+- Page visibility changes may pause drawing; resuming continues within the
+  6-second ceiling rather than restarting.
+- Canvas or dependency errors remove/ignore the art layer and preserve the
+  opening's current CSS fallback.
+
+### Approval and implementation checks
+
+Before implementation, approve the motion storyboard and the scene's Indic
+motif vocabulary. After implementation, verify both motion paths, failure
+fallback, keyboard/focus behavior, title/quote contrast, no persistent RAF loop,
+and byte/performance cost. Regression tests must prove shelf filters/search,
+card metadata, all card links, and `#bookReader` remain behaviorally unchanged.

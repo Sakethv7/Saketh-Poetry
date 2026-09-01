@@ -166,3 +166,58 @@ here means the old fixed-height shelf with the new backdrop element inside it.
 The plan puts every shelf rule in the inline block, where the constraints it
 overrides already live, so no bump is expected. Stated so that it is a checked
 condition rather than a lucky one.
+
+## 5. Homepage generative-art interface — proposed
+
+This is an internal browser interface, not a network API. Names are provisional
+until implementation review, but the boundary is fixed.
+
+### Markup contract
+
+| Selector | Cardinality | Contract |
+|---|---:|---|
+| `.opening` | 1 on homepage | Sole lifecycle owner for generative art |
+| `.opening-art` | 0 or 1 | Canvas host; `aria-hidden="true"`, non-focusable, no pointer events |
+| `.quote-stage` | 1 | Existing semantic title/quotation layer; paints above canvas |
+| `#poems` | 1 | Must not be queried, mutated, resized, or restyled by the scene |
+| `#bookReader` | 1 | Must not be queried, mutated, or receive scene events |
+
+Individual `poems/*.html` files must not contain `.opening-art` and must not load
+the p5.brush scene module. Their existing `body[data-anim]` contract is unchanged.
+
+### Scene-module contract
+
+Proposed constructor:
+
+```js
+createOpeningArtwork({ host, reducedMotion, seed })
+```
+
+| Input | Type | Rule |
+|---|---|---|
+| `host` | `HTMLElement` | Must be the `.opening-art` element inside `.opening` |
+| `reducedMotion` | `boolean` | `true` renders the settled frame immediately |
+| `seed` | fixed number/string | Produces a stable composition across redraws |
+
+The returned controller, if one is needed, exposes only `resize()` and
+`destroy()`. It exposes no shelf, filter, card, poem, or reader operations.
+Initialization failure must be caught at the call site and must leave the host
+empty rather than blocking the page.
+
+### Visual output contract
+
+- Canvas dimensions follow `.opening`; CSS owns display size.
+- Canvas is decorative and contains no title, quotation, navigation, or labels.
+- Normal motion completes and stops within 4–6 seconds.
+- Reduced motion draws the same final visual state without temporal reveal.
+- Responsive redraws use the same seed and preserve the composition's hierarchy.
+- No storage, cookies, analytics events, network generation calls, audio, or
+  hardware/GPU feature assumptions are introduced.
+
+### Loading contract
+
+Libraries and the scene module load on `index.html` only, using pinned reviewed
+versions or vendored files. They must not delay semantic opening content. If
+external delivery is chosen during implementation, integrity/cross-origin and
+offline failure behavior require explicit review; vendoring is the safer default
+for this static GitHub Pages site.

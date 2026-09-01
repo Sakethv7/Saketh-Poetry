@@ -196,8 +196,8 @@ body[data-art="anthology-home"] .opening {
   background:
     linear-gradient(180deg, rgba(4,7,8,0.24) 0%, rgba(5,7,7,0.4) 62%, rgba(7,6,5,0.68) 100%),
     linear-gradient(90deg, rgba(4,7,8,0.34), transparent 24%, transparent 74%, rgba(5,7,7,0.35)),
-    image-set(url("../assets/art/delhi-poetry-bookstore.webp") type("image/webp"),
-              url("../assets/art/delhi-poetry-bookstore.jpg") type("image/jpeg"))
+    image-set(url("../assets/art/wandering-poet-indic-home-v1.webp") type("image/webp"),
+              url("../assets/art/wandering-poet-indic-home-v1.png") type("image/png"))
       center / cover no-repeat;
 }
 
@@ -268,6 +268,16 @@ body[data-art="mumbai-monsoon-umbrella"] {
   --art-image: url("../assets/art/green-umbrella-mumbai-monsoon.png");
 }
 
+body[data-art="mumbai-monsoon-watercolor"] {
+  --art-image: url("../assets/art/green-umbrella-mumbai-watercolor-v2.webp");
+  --art-position: 62% top;
+}
+
+body[data-art="mumbai-wandering-taxi"] {
+  --art-image: url("../assets/art/wandering-taxi-mumbai-monsoon-v1.webp");
+  --art-position: 58% top;
+}
+
 body[data-art="warden-hairclip"] {
   --art-image: url("../assets/art/wardens-garden-hairpin-v2.jpg");
   --art-position: 56% top;
@@ -302,6 +312,20 @@ body[data-art="barsati-false-consolation"] {
   body[data-art-image] {
     background-attachment: scroll !important;
     background-position: center top !important;
+  }
+
+  body[data-art="mumbai-monsoon-watercolor"] {
+    background-color: #11161c !important;
+    background-position: center top, center top, 64% top !important;
+    background-repeat: no-repeat !important;
+    background-size: 100% 58vh, 100% 58vh, auto 58vh !important;
+  }
+
+  body[data-art="mumbai-wandering-taxi"] {
+    background-color: #11151a !important;
+    background-position: center top, center top, 58% top !important;
+    background-repeat: no-repeat !important;
+    background-size: 100% 58vh, 100% 58vh, auto 58vh !important;
   }
 
   body[data-art-image] .poem-metadata {

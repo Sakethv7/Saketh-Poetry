@@ -339,3 +339,49 @@ Given up:
   larger refactor of a stylesheet that is otherwise plain.
 - Fixing a bug outside the requested scope. Justified because the change cannot
   be verified without it, but it is a separate defect and is called out as one.
+
+## ADR-0008 — A single generative ink-and-watercolor identity belongs only to the homepage opening
+
+**Status:** Local prototype for visual review; not approved or shipped.
+
+### Context
+
+Earlier unique full-screen art across poem pages made the collection feel
+overstimulating. The shared book reader produced the calmer and more coherent
+reading experience. The anthology still needs a memorable visual signature, but
+that signature must not spread back into the reading surfaces or disturb the
+accepted bookshelf.
+
+### Options
+
+1. Put a unique generative scene on every poem page.
+2. Add one generative scene to the homepage opening and preserve every reading
+   surface.
+3. Keep the current CSS opening unchanged.
+4. Build or fine-tune a generative model to create the visual system.
+
+### Decision
+
+Choose option 2. Reinterpret only the homepage opening with handcrafted,
+editable p5.brush code. The scene begins as blank paper, forms through brush
+strokes, reveals the existing title and quotation, settles after roughly 4–6
+seconds, and then yields to the unchanged bookshelf on scroll.
+
+The visual language is original Indic ink and watercolor derived from the
+anthology's own motifs. A reference may inform medium or motion, but no specific
+hibiscus composition is reproduced. Individual poem pages remain typography-led
+with their existing restrained `data-anim` layers. `#poems` and `#bookReader`
+are explicit no-change zones.
+
+### Consequences
+
+The homepage gains one client-side dependency boundary and one finite animation
+lifecycle. The artwork stays editable as code and can be tuned without an ML
+pipeline. The settled frame must work as the canonical reduced-motion state.
+The cost is that the whole identity depends on one composition; approval should
+therefore judge its cultural specificity, restraint, legibility, and transition
+into the shelf before implementation begins.
+
+Rejected for this change: per-poem p5.brush scenes, continuous animation,
+randomly changing compositions, model fine-tuning, RL infrastructure, changes to
+card/shelf/reader markup, and painting semantic text into the canvas.

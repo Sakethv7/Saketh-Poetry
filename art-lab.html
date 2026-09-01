@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Wandering Poet — Indic Art Lab</title>
+  <style>
+    :root { color-scheme: dark; --ink:#eee6d7; --muted:#a99f90; --panel:#11100e; --line:#35312b; --gold:#c79552; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:#090909; color:var(--ink); font:14px/1.45 ui-sans-serif,system-ui,sans-serif; }
+    main { display:grid; grid-template-columns:minmax(0,1fr) 330px; height:100vh; overflow:hidden; }
+    .stage { display:grid; place-items:center; min-height:0; padding:34px; background:radial-gradient(circle at 50% 40%,#24221e,#090909 68%); }
+    .painting { position:relative; width:min(100%,1100px); aspect-ratio:16/9; box-shadow:0 30px 90px #000c; overflow:hidden; background:#171713; }
+    canvas { width:100%; height:100%; display:block; }
+    .caption { position:absolute; left:5%; bottom:5%; letter-spacing:.18em; text-transform:uppercase; color:#f5ead5b8; font-size:10px; pointer-events:none; }
+    aside { height:100vh; padding:26px 24px 40px; background:var(--panel); border-left:1px solid var(--line); overflow:auto; }
+    h1 { margin:0; font:500 24px/1.15 Georgia,serif; }
+    .dek { margin:8px 0 24px; color:var(--muted); }
+    fieldset { border:0; padding:0; margin:0 0 22px; }
+    legend { width:100%; padding:0 0 8px; margin-bottom:12px; border-bottom:1px solid var(--line); color:var(--gold); font-size:11px; letter-spacing:.16em; text-transform:uppercase; }
+    label { display:grid; grid-template-columns:1fr auto; gap:6px 12px; margin:0 0 15px; color:#d5ccbd; }
+    label output { color:var(--muted); font-variant-numeric:tabular-nums; }
+    input[type=range], select { grid-column:1/-1; width:100%; accent-color:var(--gold); }
+    select { appearance:none; padding:10px 12px; border:1px solid var(--line); color:var(--ink); background:#1a1815; }
+    .toggle { grid-template-columns:auto 1fr; align-items:center; }
+    .toggle input { accent-color:var(--gold); }
+    .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    button,a.button { border:1px solid var(--line); background:#1b1814; color:var(--ink); padding:11px 12px; cursor:pointer; text-align:center; text-decoration:none; }
+    button:hover,a.button:hover { border-color:var(--gold); }
+    @media (max-width:860px) { main{grid-template-columns:1fr;height:auto;overflow:visible}.stage{min-height:58vh;padding:16px}aside{height:auto;border-left:0;border-top:1px solid var(--line)} }
+  </style>
+</head>
+<body>
+<main>
+  <section class="stage" aria-label="Live artwork preview">
+    <figure class="painting">
+      <canvas id="painting"></canvas>
+      <figcaption class="caption" id="caption">Wandering Poet · anthology opening</figcaption>
+    </figure>
+  </section>
+  <aside>
+    <h1>Indic Art Lab</h1>
+    <p class="dek">Approved paintings become editable visual presets. The browser adds atmosphere without repainting the poem.</p>
+    <fieldset>
+      <legend>The poem</legend>
+      <label>Scene
+        <select id="scene">
+          <option value="home">Anthology opening</option>
+          <option value="umbrella">The Green Umbrella</option>
+          <option value="lane">Khaali Gali</option>
+          <option value="aangan">Aangan Ke Phool</option>
+          <option value="spring">The Woman Who Brought Spring</option>
+          <option value="hairpin">Hairpin</option>
+          <option value="barsati">Jhuti Tasalli</option>
+          <option value="taxi">A Wandering Taxi</option>
+        </select>
+      </label>
+    </fieldset>
+    <fieldset>
+      <legend>The atmosphere</legend>
+      <label>Dusk <output for="dusk"></output><input id="dusk" type="range" min="0" max="100" value="30"></label>
+      <label>Warm lamplight <output for="warmth"></output><input id="warmth" type="range" min="0" max="100" value="24"></label>
+      <label>Monsoon blue <output for="monsoon"></output><input id="monsoon" type="range" min="0" max="100" value="22"></label>
+      <label>Fog <output for="fog"></output><input id="fog" type="range" min="0" max="100" value="6"></label>
+      <label class="toggle"><input id="rain" type="checkbox" checked> Rain on the paper</label>
+    </fieldset>
+    <fieldset>
+      <legend>The paint</legend>
+      <label>Pigment <output for="pigment"></output><input id="pigment" type="range" min="60" max="150" value="104"></label>
+      <label>Paper grain <output for="grain"></output><input id="grain" type="range" min="0" max="100" value="28"></label>
+      <label>Ink vignette <output for="vignette"></output><input id="vignette" type="range" min="0" max="100" value="40"></label>
+      <label>Text clearing <output for="clearing"></output><input id="clearing" type="range" min="0" max="100" value="28"></label>
+    </fieldset>
+    <div class="actions">
+      <button id="reset" type="button">Reset preset</button>
+      <button id="save" type="button">Save image</button>
+      <a class="button" href="index.html">Open anthology</a>
+      <button id="seed" type="button">New rain seed</button>
+    </div>
+  </aside>
+</main>
+<script src="js/art-lab.js"></script>
+</body>
+</html>

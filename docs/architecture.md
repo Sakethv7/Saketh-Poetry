@@ -221,3 +221,62 @@ in the inline block.
    Responsive Design"). The shelf as built is desktop-first with a phone
    override, which is the opposite. The doc is describing an intention rather
    than the code. Not resolved here; noted so neither is silently trusted.
+
+## Homepage generative identity — local prototype, not shipped
+
+This addition is limited to the opening section of `index.html`. It does not
+change the shelf, poem cards, metadata, filters, search, individual poem pages,
+or the `#bookReader` dialog. A local prototype now exercises this boundary; it
+has not been committed, deployed, or accepted as the final art direction.
+
+The proposed opening adds one presentational p5.brush canvas behind the existing
+title/quotation layer. Its lifecycle is deliberately finite:
+
+```text
+blank paper -> opening brush scene -> title and quotation -> settled painting
+                                                     |
+                                                     v
+                                             existing #poems shelf
+```
+
+The scene uses an original Indic ink-and-watercolor vocabulary: absorbent paper,
+restrained mineral/earth pigments, calligraphic line, negative space, and motifs
+drawn from the anthology's recurring weather, streets, gardens, thresholds, and
+journeys. It must not reproduce Surya's hibiscus composition or import a generic
+"Indian" ornament layer.
+
+### Component boundary
+
+| Component | Proposed responsibility | Boundary |
+|---|---|---|
+| `.opening` | Owns the identity experience and clipping region | Only runtime allowed to initialize the generative canvas |
+| `.opening-art` | Hosts one canvas behind the existing copy | Presentational, non-interactive, `aria-hidden` |
+| Opening copy | Preserves readable title and quotation content | Remains semantic DOM, never painted into canvas |
+| `#poems` | Existing bookshelf, cards, filters, and metadata | No structural or behavioral edits |
+| `#bookReader` | Existing shared reading surface | No structural or behavioral edits |
+| `poems/*.html` | Individual poem pages | No p5.brush import or initialization |
+| `js/bg-anim.js` | Existing subtle `data-anim` atmospheres | Retained; not replaced by the homepage identity |
+
+### Runtime and dependency shape
+
+The preferred implementation is one small, handcrafted scene module loaded by
+the homepage only, plus p5 and p5.brush pinned to reviewed versions. There is no
+model training, Qwen fine-tuning, RL loop, server, build pipeline, or generated
+asset service. The dependency must fail open: if either library or the scene
+throws, the present CSS paper background and semantic opening copy remain usable.
+
+The canvas animates once for a target of 4–6 seconds, calls `noLoop()` after the
+settled frame, and does not restart on scroll. A resize may redraw the settled
+composition deterministically at the new dimensions; it must not replay the
+entrance. Under `prefers-reduced-motion: reduce`, the opening renders a final
+static composition immediately, with no stroke-by-stroke reveal.
+
+### Performance and accessibility budgets
+
+- The canvas never captures pointer or keyboard input.
+- Semantic title, quotation, nav, and scroll cue stay in HTML above the canvas.
+- The draw loop ends after settling; there is no permanent homepage animation.
+- The scene is responsive and may simplify its stroke count on narrow screens.
+- Failure, disabled JavaScript, or reduced motion preserves a complete opening.
+- Implementation approval requires checking layout, contrast, long tasks, and
+  reader/shelf regressions at mobile and desktop widths.
