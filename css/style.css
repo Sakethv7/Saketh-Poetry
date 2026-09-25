@@ -157,8 +157,13 @@ nav a:hover {
   margin-bottom: 2rem;
 }
 
+/* Wrapped lines hang indented so they read as one line of verse,
+   and "pretty" avoids leaving a lone word on the continuation. */
 .stanza p {
   margin-bottom: 0.8em;
+  text-wrap: pretty;
+  padding-left: 1.5em;
+  text-indent: -1.5em;
 }
 
 .stanza p:last-child {
