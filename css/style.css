@@ -260,6 +260,7 @@ nav a:hover {
   color: var(--text-secondary);
   font-size: 1.1rem;
   margin-bottom: 1rem;
+  text-wrap: balance;
 }
 
 /* Image-backed poem accents */
