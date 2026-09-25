@@ -109,6 +109,28 @@ paper and margin annotations for nazms, water tide marks for rain, pressed
 petals and photograph corners for memory, and one botanical specimen for a
 seasonal shift.
 
+### Moods (implemented)
+
+On the poem pages, light motifs are delivered as **moods**: a pair of
+single-colour ornaments, a divider and an end mark, painted in the poem's
+accent colour. Every poem in the two lists above has one, chosen by its
+strongest image:
+
+| Mood | Divider → end mark |
+|---|---|
+| `sharad` | peepal leaf → sunflower (तुम्हारी यादें only) |
+| `barish` | raindrop → umbrella |
+| `patjhad` | oak leaf → acorn |
+| `bagicha` | blossom → rosebud |
+| `chandni` | crescent → star |
+| `samundar` | waves → paper boat |
+| `sheher` | street lamp → window |
+| `syahi` | pen nib → ink drop |
+
+The poem-by-mood list and the rules live in `docs/architecture.md` and
+ADR-0011/0014. Moods are ornament only; they never add a representational
+background, so they stay within this document's restraint rules.
+
 ## Book Chapters
 
 These poems are strongest as typography-first chapters:
@@ -158,4 +180,7 @@ specificity, narrative accuracy, file weight, and contrast before publishing.
    progress to the book reader.
 5. Add curated paths such as Delhi in Rain, Gardens and Departures, and
    Hindi/Urdu Nights.
-6. Generate social previews only from approved artwork.
+6. Social previews: poems with approved artwork use that artwork. Every other
+   poem gets a typographic card (title, a few lines, its palette and mood
+   ornaments), rendered at each deploy. Cards contain no generated imagery,
+   so they need no artwork approval. See ADR-0009 and ADR-0013.

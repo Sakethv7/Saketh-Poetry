@@ -499,10 +499,9 @@ gradient stops were deepened (by 33% and 29%) instead.
 
 #### Open questions (rollout)
 
-1. **`ART_DIRECTION.md` says "generate social previews only from approved
-   artwork."** The text cards shipped in the previous change contradict that
-   line. The cards carry no artwork, so arguably the rule doesn't apply, but
-   the document should be updated to say so rather than left silently wrong.
+1. **Resolved.** `ART_DIRECTION.md` now says that poems with approved artwork
+   use it as their preview and all others get a typographic card, and it lists
+   the mood families.
 2. **Resolved.** The eight book-chapter pages that failed contrast were fixed
    in the same change, at the author's request.
 3. **A deploy with every card failing still ships.** If Chrome or Google Fonts
