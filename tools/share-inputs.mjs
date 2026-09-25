@@ -7,8 +7,9 @@
 
 import { createHash } from 'node:crypto';
 
-// Bump when tools/share-card.html changes, so every card is re-rendered.
-export const TEMPLATE_VERSION = 3;
+// Bump when tools/share-card.html or an ornament SVG changes: the hash does
+// not cover ornament artwork, so this is what gives cards a new URL.
+export const TEMPLATE_VERSION = 4;
 
 export const SITE = 'https://sakethv7.github.io/Saketh-Poetry/';
 export const DEFAULT_OG_IMAGE = `${SITE}assets/art/delhi-poetry-bookstore.jpg`;
