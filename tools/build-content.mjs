@@ -2,6 +2,9 @@
 //   poems.json  — content for the homepage book reader and full-text search
 //   sitemap.xml — every poem page, for search engines
 //
+// --check also verifies each poem's link-preview card (assets/share/) still
+// matches the poem. Cards are rendered locally by build-share-cards.mjs.
+//
 //   node tools/build-content.mjs          # write both
 //   node tools/build-content.mjs --check  # exit 1 if either is stale
 //
@@ -11,49 +14,15 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  SITE, extractBlock, decodeEntities, extractText,
+  readShareInputs, cardHash, cardUrl, ogImage
+} from './share-inputs.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const poemsDir = join(root, 'poems');
 const contentFile = join(root, 'poems.json');
 const sitemapFile = join(root, 'sitemap.xml');
-const SITE = 'https://sakethv7.github.io/Saketh-Poetry/';
-
-// Pulls the inner HTML of the first element with the given class, counting
-// nested <div>s so stanza wrappers don't end the block early.
-function extractBlock(html, className) {
-  const open = new RegExp(`<div class="${className}"[^>]*>`);
-  const start = html.search(open);
-  if (start === -1) return null;
-  const bodyStart = start + html.slice(start).match(open)[0].length;
-
-  const tag = /<(\/?)div\b[^>]*>/g;
-  tag.lastIndex = bodyStart;
-  let depth = 1;
-  let match;
-  while ((match = tag.exec(html))) {
-    depth += match[1] ? -1 : 1;
-    if (depth === 0) return html.slice(bodyStart, match.index);
-  }
-  return null;
-}
-
-function decodeEntities(text) {
-  return text
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&');
-}
-
-function extractText(html, pattern) {
-  const match = html.match(pattern);
-  if (!match) return '';
-  return decodeEntities(match[1].replace(/<[^>]+>/g, ''))
-    .replace(/\s+/g, ' ')
-    .trim();
-}
 
 // Plain text of the poem, used to power full-text search on the homepage.
 function toPlainText(html) {
@@ -86,6 +55,26 @@ async function buildEntry(file) {
   ];
 }
 
+// A card is stale when its fingerprint no longer matches the poem's current
+// title, lines, colours and mood. Poems with their own artwork are skipped.
+async function checkShareCards() {
+  const problems = [];
+  for (const file of files) {
+    const slug = file.replace(/\.html$/, '');
+    const html = await readFile(join(poemsDir, file), 'utf8');
+    const inputs = readShareInputs(html, slug);
+    if (inputs.artworkImage) continue;
+
+    const fix = `run: node tools/build-share-cards.mjs --only ${slug}`;
+    const image = ogImage(html) ?? '';
+    const cardExists = await readFile(join(root, 'assets', 'share', `${slug}.jpg`)).then(() => true, () => false);
+    if (!image.includes('/assets/share/')) problems.push(`${slug}: no card yet — ${fix}`);
+    else if (!cardExists) problems.push(`${slug}: card missing — ${fix}`);
+    else if (image !== cardUrl(slug, cardHash(inputs))) problems.push(`${slug}: card stale — ${fix}`);
+  }
+  return problems;
+}
+
 const files = (await readdir(poemsDir)).filter(f => f.endsWith('.html')).sort();
 const entries = await Promise.all(files.map(buildEntry));
 const json = JSON.stringify(Object.fromEntries(entries), null, 2) + '\n';
@@ -109,7 +98,12 @@ if (process.argv.includes('--check')) {
       process.exit(1);
     }
   }
-  console.log(`poems.json and sitemap.xml are up to date (${entries.length} poems)`);
+  const cardProblems = await checkShareCards();
+  if (cardProblems.length) {
+    console.error(cardProblems.join('\n'));
+    process.exit(1);
+  }
+  console.log(`poems.json, sitemap.xml and share cards are up to date (${entries.length} poems)`);
 } else {
   for (const [path, contents, name] of outputs) {
     await writeFile(path, contents);

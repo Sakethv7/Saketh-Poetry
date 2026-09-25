@@ -237,3 +237,108 @@ motif vocabulary. After implementation, verify both motion paths, failure
 fallback, keyboard/focus behavior, title/quote contrast, no persistent RAF loop,
 and byte/performance cost. Regression tests must prove shelf filters/search,
 card metadata, all card links, and `#bookReader` remain behaviorally unchanged.
+
+---
+
+# Logic flow — poem pages: mood and link previews
+
+Read the "Poem pages" section of `architecture.md` first. This part is the
+sequence: what runs, in what order, and where it can fail.
+
+## Terms
+
+**Link preview fetch.** When a URL is pasted into a chat app, the app's server
+(not the reader's phone) downloads the page. It reads the `og:` meta tags and
+then downloads the `og:image`. The fetcher runs no JavaScript. So everything the
+preview needs must already be in the HTML `<head>` as plain text.
+
+**Fingerprint.** A short hash of the inputs that decide what a card shows. If any
+input changes, the hash changes. It works like a checksum on the card's recipe,
+not on the image.
+
+## Flow 1 — author regenerates cards
+
+```text
+node tools/build-share-cards.mjs [--only <slug>]
+  │
+  ├─ preflight: Chrome binary exists? sips exists? ── no ──▶ exit 2, print what is missing
+  │
+  ├─ for each poems/<slug>.html (or just --only):
+  │     ├─ parse: title (<h1>), palette (--poem-bg/-text/-accent),
+  │     │         data-mood, share lines
+  │     │           share lines = every <p class="… share-line …"> in order,
+  │     │           else the first 2 <p> of .poem-text (skipping .waka-speaker),
+  │     │           else the og:description text
+  │     ├─ skip if og:image points at artwork (not the bookstore default
+  │     │   and not assets/share/) ── log "kept artwork"
+  │     ├─ hash = sha256(JSON of inputs + TEMPLATE_VERSION)[0:8]
+  │     ├─ if og:image already ends in ?v=<hash> and the JPEG exists ──▶ skip ("fresh")
+  │     ├─ fill tools/share-card.html → tmp/<slug>.html
+  │     ├─ chrome --headless --window-size=1200,630 --screenshot
+  │     │         --virtual-time-budget=5000  tmp/<slug>.html   (5 s lets web fonts load)
+  │     │     ├─ poll every 250 ms until the PNG exists and its size is stable, then kill Chrome
+  │     │     └─ no PNG after 30 s ──▶ record failure, continue with next poem
+  │     ├─ sips -s format jpeg -s formatOptions 82 → assets/share/<slug>.jpg
+  │     │     └─ > 300 KB ──▶ warn (WhatsApp may drop the large preview)
+  │     └─ rewrite <head>: og:image, og:image:width/height/alt, twitter:image
+  │
+  └─ summary: rendered / fresh / kept artwork / failed. Exit 1 if any failed.
+```
+
+*Caption: each poem is independent. One failure does not stop the others, and a
+re-run only renders what changed.*
+
+The page rewrite happens **after** the JPEG is written. If the script dies
+between the two, the page still points at the old hash. The next `--check` then
+reports it stale, which is the safe direction. A page never points at an image
+that doesn't exist.
+
+## Flow 2 — CI deploy check
+
+`build-content.mjs --check` already verifies `poems.json` and `sitemap.xml`. It
+gains one step per poem page:
+
+```text
+read og:image
+  ├─ artwork URL (not assets/share/)      ──▶ pass (ADR: artwork kept)
+  ├─ assets/share/<slug>.jpg?v=<h>
+  │     ├─ file missing                    ──▶ fail: "<slug>: card missing"
+  │     ├─ h ≠ recomputed hash             ──▶ fail: "<slug>: card stale —
+  │     │                                          run node tools/build-share-cards.mjs --only <slug>"
+  │     └─ else                            ──▶ pass
+  └─ still the bookstore default           ──▶ fail: "<slug>: no card yet"
+```
+
+The hash function and the share-line rule are **shared code**. Both scripts
+import them from one small module (`tools/share-inputs.mjs`), so the check and
+the generator can never disagree about what the inputs are.
+
+## Flow 3 — a reader opens a mooded page
+
+```text
+HTML parsed ─▶ style.css applies [data-mood="sharad"] rules
+            │     .divider-symbol: glyph hidden, peepal mask painted in --accent
+            │     .poem-text::after: sunflower mask as end mark
+            │     Devanagari glyphs: Tiro via the font-stack fallback (system font until loaded)
+            ├─▶ scroll-reveal.js fades stanzas and dividers in   (unchanged)
+            └─▶ bg-anim.js reads data-anim="leaves"              (unchanged)
+```
+
+Failure behaviour: if an ornament SVG fails to load, the mask has nothing to
+show, so the divider is just its two hairlines with an empty gap. The ◆ is not
+restored, but the layout does not break. If the font fails, the system
+Devanagari fallback stays, which is today's behaviour. Under
+`prefers-reduced-motion`, the existing scripts already skip animation, and the
+ornaments are static.
+
+## Flow 4 — someone shares the poem
+
+```text
+reader taps Share / pastes URL
+  └─▶ app server GETs poems/tumhari-yaadein.html      (no JS)
+        └─▶ reads og:title, og:description, og:image=…/assets/share/tumhari-yaadein.jpg?v=3fa9c2e1
+              └─▶ GETs the JPEG ─▶ shows card: title + chosen lines on the poem's gradient
+```
+
+Retry and caching are outside our control. Apps cache by URL, and a new `?v=`
+is the only lever we have (architecture open question 3).

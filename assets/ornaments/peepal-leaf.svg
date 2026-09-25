@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <mask id="v"><rect width="100" height="100" fill="#fff"/><g fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round"><path d="M50 18 L50 82"/><path d="M50 30 Q37.0 24 24 18"/><path d="M50 42 Q36.0 36 22 30"/><path d="M50 54 Q39.0 48 28 42"/><path d="M50 64 Q44.0 58 38 52"/><path d="M50 30 Q63.0 24 76 18"/><path d="M50 42 Q64.0 36 78 30"/><path d="M50 54 Q61.0 48 72 42"/><path d="M50 64 Q56.0 58 62 52"/></g></mask>
+  <g transform="rotate(-24 50 50)">
+    <path d="M50 16 C50 11 51 7 53 3" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M50 16 C40 5 13 7 12 31 C11 51 33 63 45 76 C48 80 49 87 50 96 C51 87 52 80 55 76 C67 63 89 51 88 31 C87 7 60 5 50 16 Z" mask="url(#v)"/>
+  </g>
+</svg>

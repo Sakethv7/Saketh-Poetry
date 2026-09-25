@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital@0;1&family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital@0;1&family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap');
 
 * {
   margin: 0;
@@ -13,8 +13,10 @@
   --border-color: #D4CCC3;
   --accent: #A89968;
   
-  --font-serif: 'Lora', serif;
-  --font-display: 'Playfair Display', serif;
+  /* Lora and Playfair have no Devanagari, so the browser takes those glyphs
+     from Tiro per character. Latin text never touches it. */
+  --font-serif: 'Lora', 'Tiro Devanagari Hindi', serif;
+  --font-display: 'Playfair Display', 'Tiro Devanagari Hindi', serif;
   --font-sans: 'Poppins', sans-serif;
   
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -134,6 +136,35 @@ nav a:hover {
 .divider-symbol {
   font-size: 1.5rem;
   line-height: 1;
+}
+
+/* Moods — a named bundle of motifs a rich poem opts into with
+   <body data-mood="…">. Ornaments are single-colour SVG stencils painted in
+   the poem's accent, so the page markup stays the same (see docs/api.md §4). */
+[data-mood="sharad"] {
+  --ornament-divider: url(../assets/ornaments/peepal-leaf.svg);
+  --ornament-end: url(../assets/ornaments/sunflower.svg);
+}
+
+[data-mood] .divider-symbol {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: transparent;
+  overflow: hidden;
+  background: var(--accent);
+  -webkit-mask: var(--ornament-divider) center / contain no-repeat;
+  mask: var(--ornament-divider) center / contain no-repeat;
+}
+
+[data-mood] .poem-text::after {
+  content: '';
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 3.5rem auto 0;
+  background: var(--accent);
+  -webkit-mask: var(--ornament-end) center / contain no-repeat;
+  mask: var(--ornament-end) center / contain no-repeat;
 }
 
 /* Stanza marker (Roman numerals) */

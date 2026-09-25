@@ -221,3 +221,124 @@ versions or vendored files. They must not delay semantic opening content. If
 external delivery is chosen during implementation, integrity/cross-origin and
 offline failure behavior require explicit review; vendoring is the safer default
 for this static GitHub Pages site.
+
+---
+
+# Interface contracts — poem pages: mood and link previews
+
+Four interfaces: the **poem page markup** that both scripts read, the **meta
+tags** that preview fetchers read, the **CLI** of the new script, and the
+**mood CSS contract**. Anything not listed is unchanged.
+
+```text
+poems/<slug>.html ──(markup contract §1)──▶ share-inputs.mjs ──▶ build-share-cards.mjs ──▶ assets/share/<slug>.jpg
+        ▲                                         │                                              │
+        └──────────(meta contract §2, written)────┴──▶ build-content.mjs --check (reads §2)      │
+                                                                                                 ▼
+                                                                        chat app preview fetcher (reads §2)
+```
+
+*Caption: the poem page is both the input and, for its `<head>`, an output. The
+shared module is the one place that defines "what goes on the card".*
+
+## 1. Poem page markup contract (inputs)
+
+| Source | Required | Rule |
+|---|---|---|
+| `<h1>` inside `.poem-metadata` | yes | Card title. Inner text, entities decoded |
+| `:root { --poem-bg; --poem-text; --poem-accent }` in the inline `<style>` | yes (all 70 have them) | Copied verbatim into the card. `--poem-bg` may be a gradient |
+| `<body data-mood="…">` | no | Must name a mood defined in §4. Unknown name → the generator exits 1 |
+| `<p class="… share-line …">` | no | 1–4 lines, in document order. More than 4 → exit 1 with the slug |
+| first two `<p>` of `.poem-text`, skipping `.waka-speaker` | fallback | Used when there are no `share-line`s. Works for stanzas, ghazal couplets and waka alike |
+
+Invariant: adding `share-line` or `data-mood` must not change what
+`build-content.mjs` extracts into `poems.json` other than the class attribute
+itself. The reader ignores both.
+
+## 2. Meta tag contract (outputs, written by the generator)
+
+```html
+<meta property="og:image"        content="https://sakethv7.github.io/Saketh-Poetry/assets/share/<slug>.jpg?v=<hash8>">
+<meta property="og:image:width"  content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt"    content="<title> — <first share line>">
+<meta name="twitter:image"       content="<same URL as og:image>">
+```
+
+- `<hash8>`: the first 8 lowercase hex characters of
+  `sha256(JSON.stringify({ title, lines, bg, text, accent, mood, v: TEMPLATE_VERSION }))`.
+  Keys are in that fixed order. `mood` is `null` when absent.
+- URLs are absolute. Preview fetchers do not resolve relative `og:image`.
+- Pages whose `og:image` points at artwork outside `assets/share/` are never
+  rewritten.
+- Existing tags (`og:title`, `og:description`, `og:url`, `twitter:card`) are
+  left untouched.
+
+## 3. CLI — `tools/build-share-cards.mjs`
+
+```text
+node tools/build-share-cards.mjs              # render every stale card
+node tools/build-share-cards.mjs --only <slug>
+node tools/build-share-cards.mjs --force      # re-render even fresh cards
+```
+
+| Env | Default |
+|---|---|
+| `CHROME_PATH` | `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` |
+
+| Exit | Meaning |
+|---|---|
+| 0 | All cards rendered or already fresh |
+| 1 | One or more poems failed (listed), or invalid input (unknown mood, > 4 share lines) |
+| 2 | Environment: Chrome or `sips` not found |
+
+Card display rule: any line longer than 110 characters is cut at the last word
+boundary before that and ends in "…". The fingerprint hashes the full lines, so
+clipping is a template concern covered by `TEMPLATE_VERSION`.
+
+Chrome in headless mode writes the screenshot but often never exits. The
+script waits until the PNG exists and its size stops changing, then kills
+Chrome itself. It gives up after 30 s per card.
+
+Output: one line per poem (`rendered` / `fresh` / `kept artwork` / `FAILED:
+<reason>`), then totals. Plain text, no colour codes.
+
+`tools/share-inputs.mjs` exports two functions, used by both scripts:
+
+```js
+readShareInputs(html: string, slug: string)
+  -> { title, lines: string[], bg, text, accent, mood: string | null, artworkImage: string | null }
+cardHash(inputs) -> string   // 8 hex chars, per §2
+```
+
+`--check` failures print `<slug>: card missing | card stale | no card yet` and
+the exact regenerate command. The exit code stays 1, as it is today.
+
+## 4. Mood CSS contract
+
+A mood is defined only in `css/style.css`:
+
+```css
+[data-mood="sharad"] {
+  --ornament-divider: url(../assets/ornaments/peepal-leaf.svg);
+  --ornament-end:     url(../assets/ornaments/sunflower.svg);
+}
+```
+
+| Rule | Invariant |
+|---|---|
+| `[data-mood] .divider-symbol` | Glyph hidden (`color: transparent`), box ≈ 1.5em square, `background: var(--accent)`, `mask: var(--ornament-divider) center/contain no-repeat` |
+| `[data-mood] .poem-text::after` | End mark, same mask technique, only if `--ornament-end` is set |
+| Ornament SVGs | Single-colour silhouettes on a transparent background, a square `viewBox`, no embedded text, under 4 KB each |
+| Unmooded pages | No selector here may match a page without `data-mood`. Checked by diffing a screenshot of one unmooded poem before and after |
+
+Every edit to these rules bumps `style.css?v=` on all 71 pages.
+
+## 5. Accessibility contract
+
+- Ornaments are CSS-only and invisible to screen readers. No new markup, so no
+  new `aria-*` is needed.
+- Mood palettes must give `--text-secondary` at least 4.5:1 and `--poem-text`
+  at least 7:1 against every stop of `--poem-bg`. This is verified with a
+  contrast calculation for each gradient stop, not by eye.
+- `og:image:alt` gives the card a text alternative in apps that expose it.

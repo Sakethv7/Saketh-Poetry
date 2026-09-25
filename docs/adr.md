@@ -385,3 +385,163 @@ into the shelf before implementation begins.
 Rejected for this change: per-poem p5.brush scenes, continuous animation,
 randomly changing compositions, model fine-tuning, RL infrastructure, changes to
 card/shelf/reader markup, and painting semantic text into the canvas.
+
+---
+
+# ADRs — poem pages: mood and link previews
+
+These records cover the change described in `architecture.md` under "Poem
+pages — per-poem mood and link previews". Status for all four: **accepted and
+implemented, 2026-09-25**.
+
+## ADR-0009 — Preview cards are rendered locally by headless Chrome and committed
+
+### Context
+
+Each poem needs its own 1200×630 preview image. The image has to show
+Devanagari correctly. Devanagari is a **complex script**: letters combine into
+conjuncts (`म् + ह → म्ह`) and vowel signs move around the consonant. A renderer
+needs a **shaping engine**, the component that turns a letter sequence into the
+right glyphs. Without one, तुम्हारी renders as broken pieces. The site is static
+on GitHub Pages, so nothing can render on request.
+
+### Options
+
+1. **Headless Chrome screenshot of an HTML card template.** Chrome's shaping
+   engine is the one readers' browsers use. The card uses the same CSS, fonts and
+   gradients as the page.
+2. **Python Pillow with libraqm.** Pillow is a Python imaging library, and
+   libraqm is the shaping engine it can use. Both are installed on this machine.
+   But the card layout, line wrapping and gradients would be rewritten by hand in
+   Python, and a Devanagari font file would have to be committed.
+3. **Satori + resvg via npm.** This is the usual Node pipeline. It adds
+   `package.json` and `node_modules`, and Satori does not shape Devanagari.
+4. **A dynamic OG image service.** It needs a server and uses Satori, so it has
+   the same shaping problem.
+5. **Hand-made cards in a design tool.** They look best, but 70 cards drift out
+   of date the first time a poem is edited.
+
+### Decision
+
+Option 1. The card is an HTML file, so it is designed with the same tools as the
+site. Shaping is correct by construction. There are no new dependencies.
+
+### Consequences
+
+What is given up: generation only works on a Mac with Chrome installed, because
+the script calls Chrome's binary and macOS `sips`. CI cannot regenerate cards.
+It can only detect stale ones (ADR-0010). Screenshots are also not
+byte-for-byte reproducible across Chrome versions, so regenerating an unchanged
+poem may produce a different file. That is why the fingerprint is computed from
+the card's inputs, never from the image bytes. Fonts are fetched from Google
+Fonts during rendering, so generation needs network access.
+
+## ADR-0010 — A content fingerprint in the `og:image` URL, checked in CI
+
+### Context
+
+A committed image goes stale silently. Edit the first stanza, forget to
+regenerate, and the preview quotes lines that no longer exist. That is exactly
+what happened with the homepage card excerpt for तुम्हारी यादें in this session.
+Apps like WhatsApp also cache previews by image URL, so a changed image at the
+same URL may keep showing the old one.
+
+### Options
+
+1. **No check.** Rely on remembering to regenerate.
+2. **Fingerprint the inputs.** Hash the card's inputs (title, share lines,
+   colours, mood and template version). Put the first 8 hex characters in the
+   URL as `?v=<hash>`. `--check` recomputes the hash and compares.
+3. **Generate cards in CI.** Install Chrome on the GitHub runner and render
+   there on every deploy.
+
+### Decision
+
+Option 2. The check is plain string work, so it fits in the existing
+dependency-free `build-content.mjs --check`. The same hash also busts preview
+caches: new content means a new URL.
+
+### Consequences
+
+What is given up: editing a poem's opening lines, when those are its share
+lines, now blocks the deploy until the cards are regenerated locally. That is
+friction, but it only appears when the card really is wrong. Editing lines that
+are not share lines does not trigger it. Changing the card template bumps its
+version and makes every card stale at once. That is correct, but it means
+regenerating all 70 cards (about a minute).
+
+## ADR-0011 — Moods are named CSS bundles selected by `data-mood`, with SVG mask ornaments
+
+### Context
+
+Rich poems should feel like themselves. Each page already has an inline palette
+and a `data-anim` atmosphere. What's missing is motif: the ornaments that tie
+the page to the poem's images. Whatever is added must not touch the poem markup
+that `build-content.mjs` extracts for the reader and search.
+
+### Options
+
+1. **Bespoke inline CSS and markup per poem.** Each page gets its own ornaments
+   written straight into its HTML.
+2. **Named moods in the shared stylesheet.** `[data-mood="sharad"]` rules
+   restyle `.divider-symbol` and add an end mark, using SVG files as CSS masks.
+   The page opts in with one attribute.
+3. **A JSON mood config plus a JS theme engine** that applies moods at runtime.
+
+### Decision
+
+Option 2. It changes one attribute per page, and the extracted poem markup is
+unchanged. Moods can be reused: a later autumn poem can take `sharad` as is.
+Option 3 adds a runtime and a failure mode for what is only styling.
+
+### Consequences
+
+What is given up: CSS masks produce **single-colour silhouettes**. A mask only
+decides where the accent colour shows, so there is no shading or
+multi-colour ornament. Every new mood edits `style.css` and so bumps its `?v=`
+on all 71 pages. Moods also never reach the `#bookReader`, which has no
+`data-mood`. The reader keeps its uniform paper look, which is the deliberate
+choice from ADR-0008.
+
+## ADR-0012 — Tiro Devanagari Hindi for Devanagari text
+
+### Context
+
+None of the site's fonts (Lora, Playfair Display, Poppins) include Devanagari.
+So `.hindi-text` falls back to whatever the reader's system has, which differs
+on every device. Only तुम्हारी यादें uses Devanagari today. The other 25 Hindi
+and Urdu poems are written in Roman letters.
+
+### Options
+
+1. **System fallback** (status quo). There is no cost, and there is no
+   control over the look.
+2. **Tiro Devanagari Hindi.** A literary text face designed to sit beside Latin
+   serifs like Lora. One weight, plus italic.
+3. **Noto Serif Devanagari.** Full weight range and very robust, but larger
+   files and a plainer, more technical look.
+
+### Decision
+
+Option 2. It's loaded through the existing Google Fonts import and added as
+the second family in `--font-serif` and `--font-display`
+(`'Lora', 'Tiro Devanagari Hindi', serif`). This is **per-character font
+fallback**: Lora has no Devanagari glyphs, so for those characters alone the
+browser moves to the next family in the list. Latin text keeps Lora
+everywhere, and no markup needs a class. Google serves each script as a
+separate **unicode-range subset**, so a browser downloads Tiro only when a page
+actually contains Devanagari. English and Roman-script pages pay nothing.
+
+This was chosen during implementation over the originally planned
+`.hindi-text` rule. The class only covered the poem's lines. The Devanagari
+title, the nav title and the homepage card still fell back to system fonts.
+
+### Consequences
+
+What is given up: a single weight, so there is no bold Devanagari title. The
+title is carried by size instead. The fallback also reaches the homepage
+shelf card and the `#bookReader` for तुम्हारी यादें. That's a small exception
+to ADR-0008's no-change zone, and it only changes which font draws the
+Devanagari. There is one extra font request (about
+60–90 KB) on Devanagari pages, with a brief moment of fallback text while it
+loads (`font-display: swap`).
