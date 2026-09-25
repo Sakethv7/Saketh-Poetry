@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <mask id="v"><rect width="100" height="100" fill="#fff"/><path d="M50 16 L50 80" stroke="#000" stroke-width="2" stroke-linecap="round"/></mask>
+  <g transform="rotate(28 50 50)" mask="url(#v)"><ellipse cx="50" cy="50" rx="14" ry="36"/><circle cx="35.0" cy="28" r="9"/><circle cx="65.0" cy="28" r="9"/><circle cx="35.0" cy="44" r="11"/><circle cx="65.0" cy="44" r="11"/><circle cx="35.0" cy="60" r="10"/><circle cx="65.0" cy="60" r="10"/><circle cx="35.0" cy="73" r="7"/><circle cx="65.0" cy="73" r="7"/></g>
+  <g transform="rotate(28 50 50)"><path d="M50 84 L50 96" stroke="#000" stroke-width="3" stroke-linecap="round"/></g>
+</svg>

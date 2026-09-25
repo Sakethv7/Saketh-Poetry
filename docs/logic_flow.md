@@ -342,3 +342,32 @@ reader taps Share / pastes URL
 
 Retry and caching are outside our control. Apps cache by URL, and a new `?v=`
 is the only lever we have (architecture open question 3).
+
+## Rollout change — Flow 1 and Flow 2 after ADR-0013
+
+Flow 1 now runs inside the deploy job, and locally only if the author wants a
+look. Flow 2's card check is deleted.
+
+```text
+node tools/build-share-cards.mjs [--stamp]   (deploy runs with --stamp; locally without)
+  ├─ launch one Chrome: --headless --remote-debugging-port=0
+  │     read <profile>/DevToolsActivePort → ws://127.0.0.1:<port>/…
+  │     └─ no port file within 10 s ──▶ warn, leave every og:image as the
+  │                                      bookstore default, exit 0
+  ├─ for each poem (4 tabs at a time):
+  │     ├─ inputs, skip artwork, hash                        (unchanged)
+  │     ├─ CDP: Target.createTarget → Page.navigate(card.html)
+  │     │        wait for Page.loadEventFired, then document.fonts.ready,
+  │     │        then two animation frames so the verse-fit script has run
+  │        (it shrinks the verse to 26 px at most, then drops whole
+  │        trailing lines, never cutting one in half)
+  │     ├─ CDP: Page.captureScreenshot {format: jpeg, quality: 82,
+  │     │        clip 1200×630} → assets/share/<slug>.jpg
+  │     │     └─ timeout 20 s or error ──▶ og:image := bookstore default, warn
+  │     └─ with --stamp only: rewrite og:image …?v=<hash> in the checkout
+  │        (without it, pages are never touched, so a local run leaves git clean)
+  └─ Browser.close; summary; exit 0 (warnings never fail the deploy)
+```
+
+*Caption: the script now fails open. A preview problem can cost a poem its
+card, never its deploy.*

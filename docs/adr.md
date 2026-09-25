@@ -545,3 +545,87 @@ to ADR-0008's no-change zone, and it only changes which font draws the
 Devanagari. There is one extra font request (about
 60–90 KB) on Devanagari pages, with a brief moment of fallback text while it
 loads (`font-display: swap`).
+
+## ADR-0013 — Cards render at deploy time over CDP; they are no longer committed
+
+**Status:** accepted and implemented, 2026-09-25. Supersedes the "local only" part of
+ADR-0009 and the staleness check of ADR-0010.
+
+### Context
+
+ADR-0009 put rendering on the author's Mac, and ADR-0010 made the deploy fail
+when a card went stale. That combination works, but it makes the author run a
+command after edits, and the author has asked for no manual step. GitHub's
+`ubuntu-latest` runner ships Google Chrome. It has no ImageMagick, and `sips`
+exists only on macOS.
+
+### Options
+
+1. **Git pre-commit hook on the Mac.** Renders cards before each commit,
+   automatically. It still needs Chrome locally, and it does nothing for an
+   edit made in GitHub's web editor or on another machine. Those edits would
+   then fail the deploy.
+2. **Render in CI and commit the cards back** as a bot. The repository stays
+   the full truth, but every edit gets a follow-up bot commit that the next
+   local push must pull first.
+3. **Render in CI into the deploy artifact only.** Cards exist only in what
+   GitHub Pages serves, rebuilt from scratch every deploy.
+
+### Decision
+
+Option 3, with Chrome driven over CDP so a JPEG comes out directly, with no
+converter and the same code path on macOS and Linux. The ADR-0010 staleness
+check is deleted, because a card rebuilt every deploy cannot be stale. The
+fingerprint stays in the `og:image` URL, but now only to bust chat apps'
+caches.
+
+### Consequences
+
+What is given up:
+- The repository no longer contains the cards, so you can't see a card by
+  opening the repo. Running `node tools/build-share-cards.mjs` locally still
+  renders them for a look, into an ignored folder.
+- Every deploy spends extra time rendering 62 cards, estimated at 20–40 s with
+  one shared Chrome.
+- The deployed HTML differs from the committed HTML by the `?v=` query on one
+  tag.
+- Card rendering now depends on the runner's Chrome version and on Google
+  Fonts being reachable at deploy time. A failure degrades to the bookstore
+  image instead of blocking the deploy.
+- The workflow moves from Node 20 to Node 22 for the built-in WebSocket.
+
+## ADR-0014 — Seven shared mood families for the rich poems; contrast is enforced by mixing, not redesign
+
+**Status:** accepted and implemented, 2026-09-25. Contrast was fixed on all 25
+failing pages, including the 8 unmooded ones, at the author's request.
+
+### Context
+
+The pilot mood was approved and the author asked for moods on the other rich
+poems. Giving 50 poems 50 bespoke ornament pairs would mean 100 drawings, and
+many poems share imagery: rain, gardens, moonlight. 17 of these pages also fail
+the §5 contrast contract that moods carry.
+
+### Options
+
+1. **One bespoke mood per poem.** Maximum specificity, and 100 ornaments to draw
+   and maintain.
+2. **Shared families by dominant image**, seven families plus `sharad`.
+3. **The `sharad` ornaments on every rich poem.** This is literally "the same
+   mood", but peepal leaves and sunflowers are wrong for Tokyo or Lost at Sea.
+
+### Decision
+
+Option 2. Each poem goes to the family of its strongest image (table in
+`architecture.md`). Contrast failures are fixed by mixing the failing colour
+toward the page's own `--poem-text`. That keeps each palette's hue and changes
+only how light it is.
+
+### Consequences
+
+What is given up: some poems sit in a family on one image out of several. *A
+Beautiful Curse* has both a night sky and oak leaves, and it's filed under
+autumn. *The Girl with a Cat Named Whiskey* has no cat ornament. Family
+ornaments are also generic by design, so the pilot's poem-specific pairing
+(peepal and sunflower, both named in the poem) is not repeated for the other
+50. Any poem can be given its own mood later without affecting the others.

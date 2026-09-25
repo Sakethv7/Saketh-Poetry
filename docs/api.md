@@ -342,3 +342,18 @@ Every edit to these rules bumps `style.css?v=` on all 71 pages.
   at least 7:1 against every stop of `--poem-bg`. This is verified with a
   contrast calculation for each gradient stop, not by eye.
 - `og:image:alt` gives the card a text alternative in apps that expose it.
+
+## Rollout changes (ADR-0013, ADR-0014)
+
+| Contract | Before | After |
+|---|---|---|
+| Committed `og:image` | `…/assets/share/<slug>.jpg?v=<hash8>` | `…/assets/share/<slug>.jpg` (no query). The deploy adds `?v=` |
+| `assets/share/` | committed | in `.gitignore`, created at deploy |
+| `build-content.mjs --check` | poems.json, sitemap.xml, cards | poems.json and sitemap.xml only |
+| `build-share-cards.mjs` exit codes | 0 / 1 failures / 2 no Chrome or sips | always 0 unless inputs are invalid (unknown mood, > 4 share lines), which is 1. Render failures are warnings. `sips` is no longer used |
+| Flags | `--only`, `--force` | `--only` kept. `--force` removed, since every run renders everything. New `--stamp`: also rewrite each page's `og:image` block, which only the deploy uses |
+| Runtime | Node ≥ 18, macOS | Node ≥ 22 (built-in `WebSocket`), macOS or Linux |
+| Moods defined | `sharad` | plus `barish`, `patjhad`, `bagicha`, `chandni`, `samundar`, `sheher`, `syahi`, each with `--ornament-divider` and `--ornament-end` |
+
+The ornament SVG rules in §4 are unchanged. All 16 files live in
+`assets/ornaments/`, are single-colour and are under 2.5 KB.

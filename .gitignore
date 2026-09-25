@@ -13,6 +13,9 @@ node_modules/
 dist/
 build/
 
+# Link-preview cards, rendered at deploy (tools/build-share-cards.mjs)
+assets/share/
+
 # Logs
 *.log
 

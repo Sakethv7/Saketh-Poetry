@@ -2,9 +2,6 @@
 //   poems.json  — content for the homepage book reader and full-text search
 //   sitemap.xml — every poem page, for search engines
 //
-// --check also verifies each poem's link-preview card (assets/share/) still
-// matches the poem. Cards are rendered locally by build-share-cards.mjs.
-//
 //   node tools/build-content.mjs          # write both
 //   node tools/build-content.mjs --check  # exit 1 if either is stale
 //
@@ -14,10 +11,7 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  SITE, extractBlock, decodeEntities, extractText,
-  readShareInputs, cardHash, cardUrl, ogImage
-} from './share-inputs.mjs';
+import { SITE, extractBlock, decodeEntities, extractText } from './share-inputs.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const poemsDir = join(root, 'poems');
@@ -55,26 +49,6 @@ async function buildEntry(file) {
   ];
 }
 
-// A card is stale when its fingerprint no longer matches the poem's current
-// title, lines, colours and mood. Poems with their own artwork are skipped.
-async function checkShareCards() {
-  const problems = [];
-  for (const file of files) {
-    const slug = file.replace(/\.html$/, '');
-    const html = await readFile(join(poemsDir, file), 'utf8');
-    const inputs = readShareInputs(html, slug);
-    if (inputs.artworkImage) continue;
-
-    const fix = `run: node tools/build-share-cards.mjs --only ${slug}`;
-    const image = ogImage(html) ?? '';
-    const cardExists = await readFile(join(root, 'assets', 'share', `${slug}.jpg`)).then(() => true, () => false);
-    if (!image.includes('/assets/share/')) problems.push(`${slug}: no card yet — ${fix}`);
-    else if (!cardExists) problems.push(`${slug}: card missing — ${fix}`);
-    else if (image !== cardUrl(slug, cardHash(inputs))) problems.push(`${slug}: card stale — ${fix}`);
-  }
-  return problems;
-}
-
 const files = (await readdir(poemsDir)).filter(f => f.endsWith('.html')).sort();
 const entries = await Promise.all(files.map(buildEntry));
 const json = JSON.stringify(Object.fromEntries(entries), null, 2) + '\n';
@@ -98,12 +72,7 @@ if (process.argv.includes('--check')) {
       process.exit(1);
     }
   }
-  const cardProblems = await checkShareCards();
-  if (cardProblems.length) {
-    console.error(cardProblems.join('\n'));
-    process.exit(1);
-  }
-  console.log(`poems.json, sitemap.xml and share cards are up to date (${entries.length} poems)`);
+  console.log(`poems.json and sitemap.xml are up to date (${entries.length} poems)`);
 } else {
   for (const [path, contents, name] of outputs) {
     await writeFile(path, contents);

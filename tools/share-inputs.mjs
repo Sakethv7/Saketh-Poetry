@@ -8,7 +8,7 @@
 import { createHash } from 'node:crypto';
 
 // Bump when tools/share-card.html changes, so every card is re-rendered.
-export const TEMPLATE_VERSION = 2;
+export const TEMPLATE_VERSION = 3;
 
 export const SITE = 'https://sakethv7.github.io/Saketh-Poetry/';
 export const DEFAULT_OG_IMAGE = `${SITE}assets/art/delhi-poetry-bookstore.jpg`;

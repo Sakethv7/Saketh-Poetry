@@ -433,3 +433,79 @@ image ceiling (keep each card under 300 KB).
 5. **`CONCEPTS.md` still describes per-poem palettes** as the whole of per-poem
    styling. It will be one step further out of date after this change. Folding
    it into this document remains the separate backfill task noted above.
+
+### Rollout: automatic cards and moods for all rich poems (implemented 2026-09-25)
+
+Two changes to the shipped design above.
+
+**1. Cards render on GitHub at every deploy, not on the author's Mac.** The
+author asked never to run the card script by hand. GitHub's Ubuntu runner
+already has Google Chrome installed (153.x, checked against the runner image
+manifest), so the deploy job can render the cards itself. The runner has no
+image converter, and `sips` is macOS-only. So the script stops screenshotting
+through Chrome's command line. Instead it drives one Chrome instance over the
+**Chrome DevTools Protocol (CDP)**, the control channel that tools like
+Puppeteer use: open a page, wait for fonts, then ask Chrome for a JPEG
+directly. Node 22 has a built-in WebSocket client, which is all CDP needs, so
+there is still no npm dependency. One side effect: Chrome no longer has to be
+killed after every card, which was the workaround for it never exiting.
+
+Cards stop being committed. `assets/share/` is removed from git and ignored.
+Committed pages point `og:image` at `assets/share/<slug>.jpg` without the
+`?v=` fingerprint. At deploy, the job renders every card into the checkout,
+adds `?v=<hash>` to each page's `og:image`, and uploads that tree to Pages. The
+repository never sees a bot commit.
+
+```text
+push to main
+  └─ deploy.yml (ubuntu-latest, Node 22)
+       ├─ build-content.mjs --check          poems.json + sitemap.xml only
+       ├─ build-share-cards.mjs --stamp      one Chrome over CDP → assets/share/*.jpg
+       │                                      rewrite og:image …?v=<hash> in the checkout
+       │                                      a card that fails → that page keeps the
+       │                                      bookstore image, warning in the log
+       └─ upload-pages-artifact → deploy     the rendered tree, never committed
+```
+
+*Caption: nothing about cards is stored in git any more. Every deploy makes
+them fresh from the current poems, so a stale card is impossible by
+construction.*
+
+**2. Moods for the 50 rich poems.** `ART_DIRECTION.md` names 50 poems besides
+तुम्हारी यादें as rich (18 "full scene" and 32 "light motif"). The 18 "book
+chapter" poems stay typography-first and get no mood, as that document says.
+Each rich poem joins one of seven **mood families**, chosen from its own
+imagery. A family is shared by all its poems, following ADR-0011's reuse rule.
+
+| Mood | Divider → end mark | Poems |
+|---|---|---|
+| `barish` (rain) | raindrop → umbrella | In the Rain, A Ring in the Rain, Does the Rain Ever Fall on Us, Eyes Almost Blue, Garden of Words, Jaayega Kahan Ab, The Green Umbrella, The Café in March, I've Known Life, September |
+| `patjhad` (autumn) | oak leaf → acorn | 11th of April, Red Sweater, A Beautiful Curse, Before We Grey, Aangan Ke Phool, Sardi Ka Mahina |
+| `bagicha` (garden) | blossom → rosebud | The Woman Who Brought Spring, The Warden's Garden, The Gardner, Gazing at Flowers, Only the Garden Roses Were Listening, At the Turn of a Hill, Once More, Ghaav Ki Khushboo, Jaan-e-Baharan, Khaali Gali |
+| `chandni` (moonlight) | crescent → star | Shaam Samay, Patjhad Ka Parichay, The Bar Under a Lonely Star, The Tattered Page, Naya Rang, Khawab Ki Dakhili |
+| `samundar` (water) | waves → paper boat | Lost at Sea, Dariya, Almere's Fair |
+| `sheher` (city) | street lamp → window | Tokyo, A Wandering Taxi, The Hairpin, Dusky Window |
+| `syahi` (ink) | pen nib → ink drop | Tale of the Wandering Poet, Simple Twist of Fate, Jhuti Tasalli, Hawa Ke Dastaan, My Dear Melancholy, Jessie, Almost Blue, Bekashi Ka Saya, The Girl with a Cat Named Whiskey, The Blue Scarf, Painting Her |
+
+Each page keeps its own palette and `data-anim`. The mood adds only the
+ornaments. Where a mooded page fails the §5 contrast contract, its
+`--text-secondary` (and `--poem-text`, if needed) is mixed toward the
+page's own text colour in small steps until it passes. The hue stays; only
+lightness moves. 17 mooded pages needed this. The author also asked for
+the 8 book-chapter pages that failed, so all 25 were fixed. Two of them, *It's
+Not As If* and *Tale of the Wandering Poet*, had mid-tone slate and sage
+backgrounds where even white text could not reach 7:1. For those two, the
+gradient stops were deepened (by 33% and 29%) instead.
+
+#### Open questions (rollout)
+
+1. **`ART_DIRECTION.md` says "generate social previews only from approved
+   artwork."** The text cards shipped in the previous change contradict that
+   line. The cards carry no artwork, so arguably the rule doesn't apply, but
+   the document should be updated to say so rather than left silently wrong.
+2. **Resolved.** The eight book-chapter pages that failed contrast were fixed
+   in the same change, at the author's request.
+3. **A deploy with every card failing still ships.** If Chrome or Google Fonts
+   is down on the runner, every page quietly falls back to the bookstore image.
+   The alternative, failing the deploy, would block a poem edit because of a
+   preview problem. The plan favours shipping and says so loudly in the log.

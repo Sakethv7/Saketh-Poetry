@@ -146,6 +146,41 @@ nav a:hover {
   --ornament-end: url(../assets/ornaments/sunflower.svg);
 }
 
+[data-mood="barish"] { /* rain */
+  --ornament-divider: url(../assets/ornaments/raindrop.svg);
+  --ornament-end: url(../assets/ornaments/umbrella.svg);
+}
+
+[data-mood="patjhad"] { /* autumn */
+  --ornament-divider: url(../assets/ornaments/oak-leaf.svg);
+  --ornament-end: url(../assets/ornaments/acorn.svg);
+}
+
+[data-mood="bagicha"] { /* garden */
+  --ornament-divider: url(../assets/ornaments/blossom.svg);
+  --ornament-end: url(../assets/ornaments/rosebud.svg);
+}
+
+[data-mood="chandni"] { /* moonlight */
+  --ornament-divider: url(../assets/ornaments/crescent.svg);
+  --ornament-end: url(../assets/ornaments/star.svg);
+}
+
+[data-mood="samundar"] { /* water */
+  --ornament-divider: url(../assets/ornaments/wave.svg);
+  --ornament-end: url(../assets/ornaments/paper-boat.svg);
+}
+
+[data-mood="sheher"] { /* city */
+  --ornament-divider: url(../assets/ornaments/street-lamp.svg);
+  --ornament-end: url(../assets/ornaments/window.svg);
+}
+
+[data-mood="syahi"] { /* ink */
+  --ornament-divider: url(../assets/ornaments/pen-nib.svg);
+  --ornament-end: url(../assets/ornaments/ink-drop.svg);
+}
+
 [data-mood] .divider-symbol {
   width: 1.75rem;
   height: 1.75rem;

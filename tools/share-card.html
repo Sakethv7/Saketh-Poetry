@@ -102,13 +102,20 @@
     {{endmark}}
   </div>
   <script>
-    // Shrink the verse until every line fits, so long lines never clip.
+    // Shrink the verse until it fits; if it still doesn't at the smallest
+    // readable size, drop whole lines from the end rather than cut one in half.
     document.fonts.ready.then(() => {
       const verse = document.querySelector('.verse');
-      let size = 38;
-      while (verse.scrollHeight > verse.clientHeight && size > 26) {
-        size -= 1;
+      const overflows = () => verse.scrollHeight > verse.clientHeight;
+      const fit = () => {
+        let size = 38;
         verse.style.fontSize = size + 'px';
+        while (overflows() && size > 26) verse.style.fontSize = --size + 'px';
+      };
+      fit();
+      while (overflows() && verse.children.length > 1) {
+        verse.lastElementChild.remove();
+        fit();
       }
     });
   </script>

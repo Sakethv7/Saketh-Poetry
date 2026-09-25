@@ -60,10 +60,10 @@ saketh-poetry/
 ├── sitemap.xml              # Generated: every poem page
 ├── tools/
 │   ├── build-content.mjs    # Regenerates poems.json + sitemap.xml
-│   ├── build-share-cards.mjs# Renders link-preview cards (local Chrome, macOS)
+│   ├── build-share-cards.mjs# Renders link-preview cards (runs at deploy)
 │   ├── share-card.html      # Card template
 │   └── share-inputs.mjs     # What goes on a card + its fingerprint
-├── assets/share/            # Generated: one 1200×630 preview card per poem
+├── assets/share/            # Generated at deploy, git-ignored: preview cards
 ├── css/
 │   └── style.css            # Global styles & typography
 ├── js/
@@ -88,17 +88,11 @@ This rewrites `poems.json` (what the homepage reader shows and search looks
 through) and `sitemap.xml`. Deployment runs `node tools/build-content.mjs --check`
 and fails if either file is out of date, so a forgotten rebuild can't ship.
 
-If you changed a poem's title, colours, mood, or the lines its link preview
-quotes (its `share-line` paragraphs, or its first two lines), also re-render
-its card:
-
-```bash
-node tools/build-share-cards.mjs
-```
-
-It only re-renders cards that are out of date. The deploy check fails with the
-exact command if a card is stale. Mark a poem's best lines for the preview by
-adding `share-line` to their `<p>` class (up to four).
+Link-preview cards need no step: every deploy renders a fresh card for each
+poem (`tools/build-share-cards.mjs --stamp` in `deploy.yml`). To choose which
+lines a poem's card quotes, add `share-line` to their `<p>` class (up to four).
+To look at the cards locally, run `node tools/build-share-cards.mjs`; they land
+in `assets/share/`, which git ignores.
 
 ---
 
