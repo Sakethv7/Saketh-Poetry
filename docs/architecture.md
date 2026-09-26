@@ -485,7 +485,7 @@ imagery. A family is shared by all its poems, following ADR-0011's reuse rule.
 | `chandni` (moonlight) | crescent → star | Shaam Samay, Patjhad Ka Parichay, The Bar Under a Lonely Star, The Tattered Page, Naya Rang, Khawab Ki Dakhili |
 | `samundar` (water) | waves → paper boat | Lost at Sea, Dariya, Almere's Fair |
 | `sheher` (city) | street lamp → window | Tokyo, A Wandering Taxi, The Hairpin, Dusky Window |
-| `syahi` (ink) | pen nib → ink drop | Tale of the Wandering Poet, Simple Twist of Fate, Jhuti Tasalli, Hawa Ke Dastaan, My Dear Melancholy, Jessie, Almost Blue, Bekashi Ka Saya, The Girl with a Cat Named Whiskey, The Blue Scarf, Painting Her |
+| `syahi` (ink) | pen nib → ink drop | Tale of the Wandering Poet, Simple Twist of Fate, Jhuti Tasalli, Hawa Ke Dastaan, My Dear Melancholy, Jessie, Almost Blue, Bekashi Ka Saya, The Girl with a Cat Named Whiskey, The Blue Scarf, Painting Her, प्रतिच्छाया (added 2026-09-26) |
 
 Each page keeps its own palette and `data-anim`. The mood adds only the
 ornaments. Where a mooded page fails the §5 contrast contract, its

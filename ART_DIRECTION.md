@@ -97,6 +97,7 @@ These poems should use restrained material details rather than full scenes:
 - Hawa Ke Dastaan
 - Sardi Ka Mahina
 - Tumhari Yaadein
+- Pratichhaya
 - Naya Rang
 - Jaan-e-Baharan
 - Ghaav Ki Khushboo

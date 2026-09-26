@@ -68,6 +68,7 @@ window.POEMS = [
   // Hindi · Urdu — Nazm
   { slug: 'shaam-e-gham',              title: 'Shaam-e-Gham' },
   { slug: 'tumhari-yaadein',           title: 'तुम्हारी यादें' },
+  { slug: 'pratichhaya',               title: 'प्रतिच्छाया' },
   { slug: 'pehele-aur-fir',            title: 'Pehele Aur Fir' },
   { slug: 'shaam-samay',               title: 'Shaam Samay' },
   { slug: 'aangan-ke-phool',           title: 'Aangan Ke Phool' },

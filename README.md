@@ -1,6 +1,6 @@
 # Wandering Poet
 
-A portfolio of 69 poems across English and Hindi · Urdu, organized by literary form. Each poem lives on its own atmospheric page with colors and aesthetics tailored to its essence.
+A portfolio of 71 poems across English and Hindi · Urdu, organized by literary form. Each poem lives on its own atmospheric page with colors and aesthetics tailored to its essence.
 
 ## The Collection
 
@@ -55,7 +55,7 @@ python3 -m http.server 8000
 ```
 saketh-poetry/
 ├── index.html               # Homepage — bookshelf, filters, search, book reader
-├── poems/                   # 70 individual poem HTML files — source of truth
+├── poems/                   # 71 individual poem HTML files — source of truth
 ├── poems.json               # Generated: poem text for the reader & search
 ├── sitemap.xml              # Generated: every poem page
 ├── tools/
@@ -110,7 +110,7 @@ To deploy your own fork:
 ## Features
 
 - **No JavaScript Framework** — Pure HTML/CSS/JS. Fast, lightweight, reliable.
-- **Filter by language or form** — Filter bar on the homepage for quick navigation across 69 poems
+- **Filter by language or form** — Filter bar on the homepage for quick navigation across 71 poems
 - **Responsive** — Mobile, tablet, desktop
 - **Per-poem theming** — Each card and poem page has a unique color palette
 - **Atmospheric backgrounds** — Canvas animations tuned to each poem's mood
