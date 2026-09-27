@@ -60,7 +60,7 @@ window.POEMS = [
   { slug: 'door-jaake-basi',            title: 'Door Jaake Basi' },
   { slug: 'shayad',                     title: 'Shayad' },
   { slug: 'jaayega-kahan-ab',           title: 'Jaayega Kahan Ab' },
-  { slug: 'hawa-ke-dastaan',            title: 'Hawa Ke Dastaan' },
+  { slug: 'hawa-ke-dastaan',            title: 'Hawa Ki Dastaan' },
   { slug: 'udaasi-ka-itiraf',           title: 'Udaasi Ka Itiraf' },
   { slug: 'khaali-gali',                title: 'Khaali Gali' },
   { slug: 'intezaar',                   title: 'Intezaar' },
