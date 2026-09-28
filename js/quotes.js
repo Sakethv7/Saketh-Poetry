@@ -62,7 +62,7 @@ window.QUOTES = [
   // Saboot
   { text: "Ye ghazal saboot hai<br>ki ye pyaar hi to hai.", src: "Saboot" },
   { text: "Jaan-e-jaan ye ghazal mein<br>tera naam hi to hai.", src: "Saboot" },
-  { text: "Ab inn hothon pe naam tera to nahi,<br>fir bhi bahare tera pata dhundte hi to hai.", src: "Saboot" },
+  { text: "Ab inn hothon pe naam tera to nahi,<br>fir bhi bahaarein tera pata dhoondhti hi to hai.", src: "Saboot" },
 
   // Dariya
   { text: "Ye dillagi bhi kaisi anokhi bimari hai,<br>itne din beet gaye tab bhi yaad suhani hai.", src: "Dariya" },
@@ -70,8 +70,8 @@ window.QUOTES = [
   { text: "Hume kya pata tha<br>ye yaadein bhi beheti hai.", src: "Dariya" },
 
   // Hum Kahan Jayenge
-  { text: "Hai qayanaat-e-mehfil saji humare liye,<br>tum kaha jaoge, hum kaha jayenge.", src: "Hum Kahan Jayenge" },
-  { text: "Dil-o-jaan to tumne rakh liya,<br>hum kaha jayenge.", src: "Hum Kahan Jayenge" },
+  { text: "Hai qayanaat-e-mehfil saji humare liye,<br>tum kahan jaoge, hum kahan jayenge.", src: "Hum Kahan Jayenge" },
+  { text: "Dil-o-jaan to tumne rakh liya,<br>hum kahan jayenge.", src: "Hum Kahan Jayenge" },
   { text: "Tum kyon phirse inhi raston mein<br>mujhe chhod aaye.", src: "Hum Kahan Jayenge" },
 
   // Kuch Lafz

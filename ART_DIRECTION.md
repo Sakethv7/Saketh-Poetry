@@ -94,7 +94,7 @@ These poems should use restrained material details rather than full scenes:
 - Garden of Words
 - Dariya
 - Jaayega Kahan Ab
-- Hawa Ke Dastaan
+- Hawa Ki Dastaan
 - Sardi Ka Mahina
 - Tumhari Yaadein
 - Pratichhaya

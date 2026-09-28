@@ -21,7 +21,7 @@ A portfolio of 71 poems across English and Hindi · Urdu, organized by literary 
 
 | Form | Poems |
 |---|---|
-| **Ghazal** (12) | Saboot, Dariya, Hum Kahan Jayenge, Kuch Lafz, Door Jaake Basi, Shayad, Jaayega Kahan Ab, Hawa Ke Dastaan, Udaasi Ka Itiraf, Khaali Gali, Intezaar, Sardi Ka Mahina |
+| **Ghazal** (12) | Saboot, Dariya, Hum Kahan Jayenge, Kuch Lafz, Door Jaake Basi, Shayad, Jaayega Kahan Ab, Hawa Ki Dastaan, Udaasi Ka Itiraf, Khaali Gali, Intezaar, Sardi Ka Mahina |
 | **Nazm** (13) | Shaam-e-Gham, तुम्हारी यादें, Pehele Aur Fir, Shaam Samay, Aangan Ke Phool, Naya Rang, Anjaan Sheher, Jaan-e-Baharan, Ghaav Ki Khushboo, Bekashi Ka Saya, Aadat, Khawab Ki Dakhili, Patjhad Ka Parichay |
 | **Nathar Nazm** (1) | Jhuti Tasalli |
 
