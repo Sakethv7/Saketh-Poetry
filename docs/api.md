@@ -357,3 +357,55 @@ Every edit to these rules bumps `style.css?v=` on all 71 pages.
 
 The ornament SVG rules in §4 are unchanged. All 16 files live in
 `assets/ornaments/`, are single-colour and are under 2.5 KB.
+
+---
+
+## Visual Level
+
+```mermaid
+flowchart TD
+    A[Motion constants] --> B[scroll-reveal.js]
+    A --> C[css/style.css]
+    A --> D[index.html quote rules]
+    B --> E{Value in range?}
+    C --> E
+    D --> E
+    E -- yes --> F[Ship]
+    E -- no --> G[Reject, keep old value]
+    classDef changed fill:#fde9b8,stroke:#8a5a00,color:#000
+    class A,B,C,D changed
+```
+
+Three files hold the motion values. Orange boxes are the places that change. A
+value outside the table below is rejected.
+
+# Interface contracts — faster motion
+
+There is no function or network interface. The contract is a set of values.
+
+## 1. Motion values
+
+| Name | Where | Before | After | Allowed range |
+|---|---|---|---|---|
+| Reveal duration | `scroll-reveal.js` line 11 | 0.9 s | 0.45 s | 0.3–0.6 s |
+| Reveal lift | `scroll-reveal.js` line 9 | 36 px | 14 px | 8–20 px |
+| Reveal opacity curve | `scroll-reveal.js` line 11 | `ease` | `ease-out` | any ease-out |
+| Reveal transform curve | `scroll-reveal.js` line 11 | `cubic-bezier(0.16, 1, 0.3, 1)` | same | any ease-out |
+| Hover duration | `--transition` in `style.css` | 0.3 s | 0.18 s | 0.12–0.25 s |
+| Hover properties | each rule using `--transition` | `all` | named list | only properties its `:hover` changes |
+| Shine sweep | `.poem-card::before` | `left` | `transform: translateX()` | `transform` or `opacity` only |
+| Quote crossfade | `.q`, `.qs` in `index.html` | 1.6 s | 0.9 s | 0.6–1.2 s |
+| First quote show | `.opening` scope | 1.6 s | 1.6 s | unchanged |
+
+## 2. Invariants
+
+- Motion uses only `transform` and `opacity`.
+- `prefers-reduced-motion: reduce` disables every motion above, as it does today.
+- The 5 second opening is unchanged.
+- The copy, titles and links do not change.
+
+## 3. Cache-busting
+
+A CSS edit needs a new `style.css?v=` on all 71 pages, as `api.md` section 4 says.
+The `scroll-reveal.js` file is loaded without a version. Check this before
+shipping, or readers may keep the old script.

@@ -629,3 +629,64 @@ autumn. *The Girl with a Cat Named Whiskey* has no cat ornament. Family
 ornaments are also generic by design, so the pilot's poem-specific pairing
 (peepal and sunflower, both named in the poem) is not repeated for the other
 50. Any poem can be given its own mood later without affecting the others.
+
+---
+
+# ADRs — faster motion
+
+## ADR-0015 — Shorten the reveal, hover and quote fades, and stop animating `all`
+
+**Status:** Proposed. Not approved.
+
+### Visual Level
+
+```mermaid
+flowchart TD
+    A[Slow motion reported] --> B{Which rule is slow?}
+    B -- reveal --> C[Cut reveal to 0.45 s, lift to 14 px]
+    B -- hover --> D[Name properties, cut to 0.18 s]
+    B -- shine sweep --> E[Move with transform, not left]
+    B -- quote fade --> F[Cut crossfade to 0.9 s]
+    C --> G{Reduced motion on?}
+    D --> G
+    E --> G
+    F --> G
+    G -- yes --> H[Skip motion, show final state]
+    G -- no --> I[Play shorter motion]
+    classDef changed fill:#fde9b8,stroke:#8a5a00,color:#000
+    class C,D,E,F changed
+```
+
+Orange boxes are the four edits. Each edit is a number or a property list. The
+reduced-motion path already exists and stays.
+
+### Context
+
+The site feels slow. The cause is long durations (0.9 s reveal, 1.6 s fades) and
+a hover rule that animates `all`. The card shine sweep animates `left`, which is
+a layout property.
+
+### Options
+
+1. Keep the values and add a motion library.
+2. Shorten the values and name the properties.
+3. Replace JavaScript reveals with CSS scroll-driven animations.
+
+### Choice
+
+Option 2. A library adds weight to fix a problem that a number fixes. Option 3 is
+a good later step. Safari support is weaker, and it needs a fallback, so it is
+not worth the risk now.
+
+### Consequences
+
+Given up: the slow, soft arrival of text. Part of the calm tone came from the
+long fade. A shorter reveal feels more direct. The poem pages lose some of that
+softness.
+
+Given up: one line of CSS per hover rule. Naming properties means a new hover
+effect must add its property to the list, or it will not animate.
+
+Given up: nothing in accessibility. Reduced motion stays as it is.
+
+Risk: 0.45 s and 14 px are untested values. Revert is one line per file.

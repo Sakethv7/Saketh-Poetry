@@ -371,3 +371,55 @@ node tools/build-share-cards.mjs [--stamp]   (deploy runs with --stamp; locally 
 
 *Caption: the script now fails open. A preview problem can cost a poem its
 card, never its deploy.*
+
+---
+
+## Visual Level
+
+```mermaid
+flowchart TD
+    A[Page loads] --> B{Reduced motion on?}
+    B -- yes --> C[Skip reveal, show text now]
+    B -- no --> D[Hide stanzas, set 0.45 s transition]
+    D --> E[Watch stanzas for 12% visibility]
+    E --> F{Stanza visible?}
+    F -- no --> E
+    F -- yes --> G[Fade and lift stanza]
+    G --> H[Stop watching that stanza]
+    I[Reader hovers card] --> J[Animate named properties in 0.18 s]
+    classDef changed fill:#fde9b8,stroke:#8a5a00,color:#000
+    class D,G,J changed
+```
+
+Orange boxes use new values. The decision points do not change.
+
+# Logic flow — faster motion
+
+## Scroll reveal
+
+1. `scroll-reveal.js` runs when the page loads.
+2. If the reader asks for reduced motion, the script stops. The text shows at once.
+3. Otherwise the script sets `opacity: 0` and a 14 px lift on each stanza, metadata
+   block, divider and footer.
+4. An `IntersectionObserver` (a browser API that reports when an element enters the
+   view) watches each item at a 12% threshold.
+5. When an item enters, the script sets `opacity: 1` and removes the lift. The
+   transition takes 0.45 s. The script then stops watching that item.
+
+**Failure and edge cases.** If `IntersectionObserver` does not exist, items stay
+hidden. This was true before the change. Every browser the site targets supports
+it. A very fast scroll can reveal many items at once. Each plays its own 0.45 s,
+so the group finishes sooner than before.
+
+## Hover
+
+On hover, the browser animates only the properties named in the rule, over 0.18 s.
+The card shine layer moves with `transform: translateX()`. On hover end, the
+properties return over the same time.
+
+## Quote rotation
+
+Every 4.5 s the script removes `.on` from the shown quote and adds it to the next
+one. Both fade for 0.9 s at the same time. The first quote keeps its present
+fade (see `architecture.md`, open question 1). With reduced motion on, the script
+does not start the rotation.

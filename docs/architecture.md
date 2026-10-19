@@ -508,3 +508,100 @@ gradient stops were deepened (by 33% and 29%) instead.
    is down on the runner, every page quietly falls back to the bookstore image.
    The alternative, failing the deploy, would block a poem edit because of a
    preview problem. The plan favours shipping and says so loudly in the log.
+
+---
+
+## Visual Level
+
+```mermaid
+flowchart TD
+    A[Reader scrolls a poem page] --> B{Stanza 12% visible?}
+    B -- no --> A
+    B -- yes --> C[Fade and lift stanza in 0.45 s]
+    D[Reader hovers a link or card] --> E[Change only named properties in 0.18 s]
+    F[Reader waits on the homepage] --> G[Quote swaps every 4.5 s]
+    G --> H[Crossfade quotes in 0.9 s]
+    I{Reduced motion on?} -- yes --> J[Show final state at once]
+    I -- no --> A
+    classDef changed fill:#fde9b8,stroke:#8a5a00,color:#000
+    class C,E,H changed
+```
+
+Orange boxes are the three steps that change: the stanza reveal, the hover
+transition and the quote crossfade. Every other step keeps its present
+behavior. The reduced-motion path is unchanged.
+
+# Architecture — faster motion (scroll reveal, hover, quote crossfade)
+
+Scope: `js/scroll-reveal.js`, the shared `--transition` rule in `css/style.css`,
+and the `.q` and `.qs` fades in `index.html`. The 5 second homepage opening
+(`docs/homepage-motion-storyboard.md`), the shelf, the reader modal and the
+build path do not change.
+
+## Complexity tier
+
+**Single static page, no build step.** This change edits timing values and
+property lists in existing files. It adds no file, no library and no script. The
+tier stays as it is. A motion library (GSAP, Motion) would be too large for this
+job. The slow feel comes from long durations, not from missing tools.
+
+## What exists today
+
+Four motion rules make the site feel slow. Each one is a number in a file.
+
+| Rule | File | Today | Effect |
+|---|---|---|---|
+| Stanza reveal | `js/scroll-reveal.js` | opacity 0.9 s, lift 36 px | Text arrives after the reader already looks at it |
+| Shared hover transition | `css/style.css` (`--transition`) | `all 0.3s` | Animates every property, including ones that do not change |
+| Card shine sweep | `css/style.css` (`.poem-card::before`) | animates `left` | `left` is a layout property. It forces the browser to recompute geometry every frame |
+| Quote crossfade | `index.html` (`.q`, `.qs`) | opacity 1.6 s | The fade fills 36% of the 4.5 s rotation |
+
+**Terms.** *Compositor*: the browser stage that moves finished layers on the
+GPU. It does not wait for the main thread. Only `transform` and `opacity` can
+always use it. *Layout property*: a property such as `left` or `width`. A change
+forces the browser to measure the page again. *Easing*: the speed curve of a
+transition. *Ease-out* starts fast and ends slow. It feels quick because the
+change starts at once.
+
+## What changes
+
+1. Stanza reveal: 0.9 s becomes 0.45 s. Lift goes from 36 px to 14 px. The
+   transform curve stays `cubic-bezier(0.16, 1, 0.3, 1)`, which is an ease-out.
+   Opacity changes from `ease` to `ease-out`.
+2. `--transition` stops using `all`. Each rule names the properties its `:hover`
+   rule changes. Duration goes from 0.3 s to 0.18 s.
+3. The shine sweep moves with `transform: translateX()` and not `left`.
+4. The quote crossfade goes from 1.6 s to 0.9 s.
+
+Why these values. Sources on web motion agree on 100–200 ms for hover feedback
+and 200–400 ms for standard transitions. Scroll reveals are larger and sit at
+the top of that range. These are community guidelines, not a specification. The
+values are a starting point to check on a real phone.
+
+## Components and boundaries
+
+| Component | Change | Boundary |
+|---|---|---|
+| `scroll-reveal.js` | Two constants | Loaded by 71 pages. Bump `style.css?v=` only if CSS changes |
+| `css/style.css` | `--transition` split, shine rule | The shelf cards, links and poem nav use it |
+| `index.html` `.q`, `.qs` | One duration | The opening's first quote also uses these rules (see Open questions) |
+
+## Deployment shape
+
+Unchanged. GitHub Pages serves the files as they are. Cache-busting follows
+`api.md` section 4.
+
+## Open questions
+
+1. **The first quote.** `.q.on` also shows the first quote during the 5 second
+   opening. A 0.9 s fade there changes the opening storyboard. Option A: accept
+   it, since the quote already appears after the title. Option B: keep 1.6 s for
+   the first show with an `.opening` scoped rule. Option B costs one more rule.
+   The default in this document is option B, so the opening stays as approved.
+2. **Doc contradiction check.** `homepage-motion-storyboard.md` says the quote
+   "emerges" over 1.8–3.3 s. The code uses a 1.6 s CSS fade. The two roughly
+   agree. I did not measure the real timing.
+3. **Value check.** 0.45 s and 14 px are my starting values from the sources.
+   Say if the reveal still feels slow on your phone.
+4. **Levels 3 and 4.** I skip the HTML explainer and the video. This change edits
+   duration values and has no new flow over time. Say if you want them.
