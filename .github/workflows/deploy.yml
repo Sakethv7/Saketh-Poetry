@@ -24,6 +24,8 @@ jobs:
       # Fails the deploy if poems.json or sitemap.xml no longer match poems/.
       - name: Check generated files are current
         run: node tools/build-content.mjs --check
+      - name: Check canonical reading paths
+        run: node tools/check-reading-paths.mjs
       # Renders every poem's link-preview card with the runner's Chrome and
       # points og:image at it. Never fails the deploy: a card that can't be
       # made leaves its page on the default image (see ADR-0013).

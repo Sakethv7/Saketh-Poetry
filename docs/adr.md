@@ -344,6 +344,9 @@ Given up:
 
 **Status:** Local prototype for visual review; not approved or shipped.
 
+> The shared-reader premise below was superseded by ADR-0016. The decision to
+> keep the homepage visual identity separate from reading surfaces still stands.
+
 ### Context
 
 Earlier unique full-screen art across poem pages made the collection feel
@@ -690,3 +693,58 @@ effect must add its property to the list, or it will not animate.
 Given up: nothing in accessibility. Reduced motion stays as it is.
 
 Risk: 0.45 s and 14 px are untested values. Revert is one line per file.
+
+---
+
+## ADR-0016 — Canonical poem pages replace the homepage book-reader modal
+
+**Status:** Implemented; teach-back pending.
+
+### Context
+
+A poem had two public render paths: the homepage intercepted most card clicks
+and copied generated HTML into a paper-coloured modal, while a direct URL loaded
+the poem's own themed page. The two paths had different typography, spacing,
+navigation, reactions and mobile wrapping. Fixing either view independently
+would preserve the inconsistency.
+
+### Options
+
+1. Keep both paths and duplicate every responsive rule in the modal.
+2. Load the canonical page in an iframe inside the modal.
+3. Let every card navigate to the canonical poem page and redirect legacy
+   `?poem=<slug>` URLs there.
+
+### Decision
+
+Option 3. The poem page is already the content source of truth and owns its
+metadata, mood, navigation and reaction control. Homepage search continues to
+use generated `poems.json`, but it no longer renders that content. A legacy
+query redirects only when its slug exactly matches an existing shelf card; an
+unknown slug leaves the homepage unchanged.
+
+At phone widths, shared CSS removes the desktop hanging indent from wrapped
+stanza lines, uses the full content measure and standardizes Devanagari text at
+body size. All pages reference `style.css?v=17` so readers do not retain the old
+mobile rules from cache.
+
+### Rejected alternatives
+
+Duplicating the responsive rules keeps two interfaces and makes every later
+typography change a synchronization problem. An iframe visually preserves the
+page but adds nested navigation, focus, scrolling and history boundaries.
+
+### Consequences
+
+The animated open-book interaction and filter-relative previous/next arrows are
+removed. In return, a card click, a direct link and an old reader link converge
+on one URL and one DOM. Browser Back returns to the homepage, while the poem
+page's existing previous/next links traverse the canonical anthology order.
+
+Failure modes: if JavaScript is disabled, card links still work; only legacy
+query redirects do not. If a legacy slug is invalid, no redirect occurs. If the
+shared stylesheet fails, semantic poem markup remains readable without the
+mobile spacing improvements.
+
+Rollback is one commit revert. That restores the modal, its history state and
+the previous stylesheet cache key together.

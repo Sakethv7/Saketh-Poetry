@@ -237,6 +237,10 @@ nav a:hover {
   margin-bottom: 0;
 }
 
+.hindi-text {
+  font-size: 1.15em;
+}
+
 /* Metadata */
 .poem-metadata {
   text-align: center;
@@ -513,7 +517,36 @@ footer {
   }
   
   .container {
-    padding: 1.5rem;
+    width: 100%;
+    padding: 1.25rem;
+  }
+
+  /* A verse line is a semantic line, not a desktop-width row. On a phone its
+     continuation uses the full measure instead of inheriting the desktop
+     hanging indent, which otherwise makes long poems look ragged. */
+  .poem-text {
+    min-width: 0;
+  }
+
+  .poem-text p {
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+
+  .stanza {
+    margin-bottom: 1.75rem;
+  }
+
+  .stanza p {
+    margin-bottom: 0.72em;
+    padding-left: 0;
+    text-indent: 0;
+    line-height: 1.75;
+    text-wrap: pretty;
+  }
+
+  .hindi-text {
+    font-size: 1em;
   }
   
   nav {

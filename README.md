@@ -54,12 +54,13 @@ python3 -m http.server 8000
 ### File Structure
 ```
 saketh-poetry/
-├── index.html               # Homepage — bookshelf, filters, search, book reader
+├── index.html               # Homepage — bookshelf, filters and search
 ├── poems/                   # 71 individual poem HTML files — source of truth
-├── poems.json               # Generated: poem text for the reader & search
+├── poems.json               # Generated: full poem text for search
 ├── sitemap.xml              # Generated: every poem page
 ├── tools/
 │   ├── build-content.mjs    # Regenerates poems.json + sitemap.xml
+│   ├── check-reading-paths.mjs # Verifies one canonical reader across all poems
 │   ├── build-share-cards.mjs# Renders link-preview cards (runs at deploy)
 │   ├── share-card.html      # Card template
 │   └── share-inputs.mjs     # What goes on a card + its fingerprint
@@ -84,8 +85,8 @@ The poem pages are the source of truth. Regenerate what's derived from them:
 node tools/build-content.mjs
 ```
 
-This rewrites `poems.json` (what the homepage reader shows and search looks
-through) and `sitemap.xml`. Deployment runs `node tools/build-content.mjs --check`
+This rewrites `poems.json` (what homepage search looks through) and
+`sitemap.xml`. Deployment runs `node tools/build-content.mjs --check`
 and fails if either file is out of date, so a forgotten rebuild can't ship.
 
 Link-preview cards need no step: every deploy renders a fresh card for each

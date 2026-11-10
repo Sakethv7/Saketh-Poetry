@@ -128,7 +128,9 @@ the scroll range. Two things follow that did not apply in the fixed layout:
 
 ### Opening a poem
 
-Unchanged. A card click is intercepted by the reader IIFE, which pushes a history
+> Superseded by ADR-0016. This paragraph records the pre-0016 flow.
+
+A card click is intercepted by the reader IIFE, which pushes a history
 entry and opens the fixed-position `.book-reader` overlay. The overlay is
 `position: fixed` and independent of the section's height, so nothing here
 depends on the change. On close, the page is where it was.
@@ -423,3 +425,36 @@ Every 4.5 s the script removes `.on` from the shown quote and adds it to the nex
 one. Both fade for 0.9 s at the same time. The first quote keeps its present
 fade (see `architecture.md`, open question 1). With reduced motion on, the script
 does not start the rotation.
+
+# Logic flow — canonical poem reading (ADR-0016)
+
+## Current entry paths
+
+```text
+homepage card click ───────────────────────────────┐
+direct poems/<slug>.html URL ─────────────────────┼─▶ canonical poem page
+homepage ?poem=<known-slug> ─▶ location.replace ──┘
+homepage ?poem=<unknown-slug> ─▶ remain on homepage
+```
+
+The card is an ordinary anchor; no click handler cancels navigation. The legacy
+redirect module reads the query once after the shelf exists, constructs the expected
+relative href and redirects only if a card has that exact href. It does not
+accept an arbitrary destination.
+
+On the poem page, `style.css?v=17` supplies the shared mobile measure. Below
+768px, stanza continuations lose the desktop hanging indent, paragraphs wrap
+inside the viewport and Devanagari verse returns to body size. The existing
+`poem-nav.js`, reaction script, mood variables and background animation run in
+the same order as they did for direct links.
+
+## State transitions and recovery
+
+There is no reader-open state, modal focus trap, body scroll lock or synthetic
+history entry. Browser history owns navigation. Back returns to the previous
+page; poem previous/next links use the canonical list in `js/poems.js`.
+
+If JavaScript fails, current links and poem navigation still work because they
+are anchors. A legacy `?poem=` URL stays on the homepage. Retrying after script
+load performs `location.replace`, so the obsolete query entry does not remain
+in history.

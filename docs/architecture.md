@@ -5,6 +5,9 @@ book reader modal, the individual poem pages under `poems/`, and the build/deplo
 path are out of scope and unchanged. This document describes only the parts of
 the system the change touches.
 
+> Historical scope note: ADR-0016 later removed the reader modal. The bookcase
+> layout described in this section remains current.
+
 > Originally scoped to phones only. Extended to all widths by ADR-0005, which
 > moves the header above the shelf as a full-width band — a change that only pays
 > off if the fixed-height frame comes off with it. The measurements are in that
@@ -538,6 +541,9 @@ and the `.q` and `.qs` fades in `index.html`. The 5 second homepage opening
 (`docs/homepage-motion-storyboard.md`), the shelf, the reader modal and the
 build path do not change.
 
+> Historical scope note: ADR-0016 later removed the reader modal; the motion
+> boundaries described here are otherwise unchanged.
+
 ## Complexity tier
 
 **Single static page, no build step.** This change edits timing values and
@@ -605,3 +611,28 @@ Unchanged. GitHub Pages serves the files as they are. Cache-busting follows
    Say if the reveal still feels slow on your phone.
 4. **Levels 3 and 4.** I skip the HTML explainer and the video. This change edits
    duration values and has no new flow over time. Say if you want them.
+
+# Architecture — one canonical poem reader (ADR-0016)
+
+The 71 files under `poems/` are now both the content source of truth and the
+only public reading interface. `index.html` owns discovery, filtering and
+search; it does not copy poem HTML into a second DOM. `poems.json` remains a
+generated search index so full-text search does not fetch 71 pages.
+
+| Component | Responsibility after ADR-0016 |
+|---|---|
+| Homepage poem card | Ordinary link to `poems/<slug>.html` |
+| `js/legacy-reader-redirect.js` | Known `?poem=<slug>` → matching canonical page |
+| `poems/*.html` | Metadata, theme, full poem, reactions and navigation |
+| `css/style.css` | Shared desktop and mobile reading measure |
+| `poems.json` | Search text only; never rendered into the homepage |
+
+The removed modal previously owned asynchronous content fetches, aborts, focus
+trapping, body scroll locking, filtered-shelf navigation and synthetic history.
+Those states no longer exist. The only new control flow is the bounded legacy
+redirect described in `logic_flow.md`. `tools/check-reading-paths.mjs` exercises
+its known, unknown, path-like and repeat-resolution cases in every deployment.
+
+Deployment remains static GitHub Pages. Because shared CSS changed, every HTML
+entry point uses `style.css?v=17`; failing to bump that value would allow a
+browser cache to mix new HTML with the old phone layout.

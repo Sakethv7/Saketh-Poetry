@@ -56,7 +56,12 @@ Planned full-art candidates:
 - **Khawab Ki Dakhili** — Indic dream, window rain, inked page.
 - **Shaam Samay** — Indic twilight garden with moon/sunflower mood.
 
-The generated scenes remain in `assets/art/` as reference material, but poem pages do not currently activate them. Every shelf volume opens in the shared book reader so the anthology has one calm reading experience. The Delhi bookstore scene remains the visual world of the homepage and bookshelf. Any future illustrated mode should be optional, rare, and reviewed in context rather than enabled poem by poem by default.
+The generated scenes remain in `assets/art/` as reference material. Every shelf
+volume opens its canonical poem page, so opening a card, following a direct URL,
+or following an old reader link ends in the same responsive reading view. The
+Delhi bookstore scene remains the visual world of the homepage and bookshelf.
+Any future illustrated mode should be optional, rare, and reviewed in context
+rather than enabled poem by poem by default.
 
 ### Interactive Elements
 - **Hover effects**: Subtle color shifts on text
